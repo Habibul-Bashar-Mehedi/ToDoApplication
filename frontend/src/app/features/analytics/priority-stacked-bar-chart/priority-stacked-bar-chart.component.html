@@ -1,0 +1,41 @@
+<div class="chart-card">
+  <h3 class="chart-card__title">Priority Analysis</h3>
+
+  @if (_data().length === 0) {
+    <div class="chart-card__empty" role="status">No priority data available for the selected range.</div>
+  } @else {
+    <div
+      class="chart-card__chart"
+      role="img"
+      aria-label="Stacked bar chart showing task count and completion rate by priority level"
+    >
+      <div
+        echarts
+        [options]="chartOptions()"
+        class="echarts-container"
+        aria-hidden="true"
+      ></div>
+    </div>
+
+    <!-- Visually-hidden data table (Req 13.1) -->
+    <table class="visually-hidden" aria-label="Priority analysis data">
+      <caption>Task count and completion rate by priority</caption>
+      <thead>
+        <tr>
+          <th scope="col">Priority</th>
+          <th scope="col">Task count</th>
+          <th scope="col">Completion rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of _data(); track item.priority) {
+          <tr>
+            <td>{{ item.priority }}</td>
+            <td>{{ item.count }}</td>
+            <td>{{ (item.completionRate * 100 | number:'1.0-0') }}%</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

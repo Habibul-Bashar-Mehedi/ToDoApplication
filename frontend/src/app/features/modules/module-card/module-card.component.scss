@@ -1,0 +1,170 @@
+@use '../../../../styles/variables' as *;
+
+// ─── Module Card ──────────────────────────────────────────────────────────────
+
+.module-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  box-shadow: $shadow-sm;
+  padding: $spacing-4;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+  transition: box-shadow 0.15s ease;
+
+  &:hover {
+    box-shadow: $shadow-md;
+  }
+}
+
+// ─── Header ──────────────────────────────────────────────────────────────────
+
+.module-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-3;
+}
+
+.module-card__name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  line-height: 1.4;
+  flex: 1;
+
+  &:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: $radius-sm;
+  }
+}
+
+// ─── Visibility badge ─────────────────────────────────────────────────────────
+
+.module-card__visibility {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  padding: 2px $spacing-2;
+  border-radius: $radius-full;
+  font-size: 0.75rem;
+  font-weight: 500;
+  flex-shrink: 0;
+
+  &--private {
+    background: #f3f4f6;
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+  }
+
+  &--shared {
+    background: #ede9fe;
+    color: #6d28d9;
+    border: 1px solid #c4b5fd;
+  }
+}
+
+// ─── Description ─────────────────────────────────────────────────────────────
+
+.module-card__description {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+  // Clamp to 2 lines
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// ─── Meta ─────────────────────────────────────────────────────────────────────
+
+.module-card__meta {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+}
+
+.module-card__task-count {
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+// ─── Actions ─────────────────────────────────────────────────────────────────
+
+.module-card__actions {
+  display: flex;
+  gap: $spacing-2;
+  flex-wrap: wrap;
+  margin-top: $spacing-1;
+}
+
+// ─── Button utilities (scoped) ────────────────────────────────────────────────
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  border: none;
+  border-radius: $radius-sm;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+  text-decoration: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-sm {
+  padding: $spacing-1 $spacing-3;
+  min-height: 44px; // WCAG 2.5.5 minimum touch target
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: var(--color-primary-hover);
+  }
+}
+
+.btn-secondary {
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+
+  &:hover:not(:disabled) {
+    background: var(--color-border);
+  }
+}
+
+.btn-danger {
+  background: var(--color-danger);
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: #b91c1c;
+  }
+}

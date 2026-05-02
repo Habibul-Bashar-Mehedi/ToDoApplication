@@ -1,0 +1,338 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+// ─── Module Detail ────────────────────────────────────────────────────────────
+
+.module-detail {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-6;
+  padding: $spacing-4;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  @include tablet {
+    padding: $spacing-6;
+  }
+
+  @include desktop {
+    padding: $spacing-8;
+  }
+}
+
+// ─── Loading ──────────────────────────────────────────────────────────────────
+
+.module-detail__loading {
+  display: flex;
+  justify-content: center;
+  padding: $spacing-12 0;
+}
+
+// ─── Breadcrumb ───────────────────────────────────────────────────────────────
+
+.module-detail__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  font-size: 0.875rem;
+}
+
+.breadcrumb__link {
+  color: var(--color-primary);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: $radius-sm;
+  }
+}
+
+.breadcrumb__separator {
+  color: var(--color-text-secondary);
+}
+
+.breadcrumb__current {
+  color: var(--color-text-secondary);
+}
+
+// ─── Header ──────────────────────────────────────────────────────────────────
+
+.module-detail__header {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+}
+
+.module-detail__title-row {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  flex-wrap: wrap;
+}
+
+.module-detail__title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.module-detail__visibility {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  padding: 2px $spacing-2;
+  border-radius: $radius-full;
+  font-size: 0.75rem;
+  font-weight: 500;
+
+  &--private {
+    background: #f3f4f6;
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+  }
+
+  &--shared {
+    background: #ede9fe;
+    color: #6d28d9;
+    border: 1px solid #c4b5fd;
+  }
+}
+
+.module-detail__description {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.module-detail__actions {
+  display: flex;
+  gap: $spacing-2;
+  flex-wrap: wrap;
+}
+
+// ─── Tabs ─────────────────────────────────────────────────────────────────────
+
+.module-detail__tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--color-border);
+}
+
+.module-detail__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-3 $spacing-4;
+  border: none;
+  background: transparent;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  &--active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+  }
+}
+
+.module-detail__tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 $spacing-1;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-full;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+// ─── Tab panels ───────────────────────────────────────────────────────────────
+
+.module-detail__panel {
+  // Remove default padding — TaskListComponent has its own padding
+}
+
+// ─── Members section ──────────────────────────────────────────────────────────
+
+.module-detail__members-loading {
+  display: flex;
+  justify-content: center;
+  padding: $spacing-8 0;
+}
+
+.module-detail__members-section {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+  padding: $spacing-4 0;
+}
+
+.module-detail__invite-cta {
+  display: flex;
+}
+
+// ─── Form fields ──────────────────────────────────────────────────────────────
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+  margin-bottom: $spacing-4;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.form-label--required {
+  color: var(--color-danger);
+  margin-left: 2px;
+}
+
+.form-label--optional {
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}
+
+.form-input {
+  width: 100%;
+  padding: $spacing-2 $spacing-3;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-sm;
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  box-sizing: border-box;
+  font-family: inherit;
+
+  &:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 0;
+    border-color: var(--color-primary);
+  }
+
+  &--error {
+    border-color: var(--color-danger);
+  }
+}
+
+.form-textarea {
+  width: 100%;
+  padding: $spacing-2 $spacing-3;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-sm;
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  resize: vertical;
+  font-family: inherit;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 0;
+    border-color: var(--color-primary);
+  }
+}
+
+// ─── Modal content ────────────────────────────────────────────────────────────
+
+.modal-text {
+  margin: 0 0 $spacing-4;
+  color: var(--color-text-primary);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-3;
+  padding: $spacing-4 $spacing-6;
+  border-top: 1px solid var(--color-border);
+}
+
+// ─── Button utilities ─────────────────────────────────────────────────────────
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-2 $spacing-4;
+  border: none;
+  border-radius: $radius-sm;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  min-height: 44px; // WCAG 2.5.5 minimum touch target
+  transition: background-color 0.15s ease;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: var(--color-primary-hover);
+  }
+}
+
+.btn-secondary {
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+
+  &:hover:not(:disabled) {
+    background: var(--color-border);
+  }
+}
+
+.btn-danger {
+  background: var(--color-danger);
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: #b91c1c;
+  }
+}

@@ -1,0 +1,87 @@
+<section class="insights-card" aria-labelledby="insights-title">
+  <h3 id="insights-title" class="insights-card__title">Productivity Insights</h3>
+
+  <dl class="insights-grid">
+
+    <!-- Most productive day -->
+    <div class="insight-item">
+      <div class="insight-item__icon" aria-hidden="true">
+        <!-- Calendar icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round" width="20" height="20">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+          <line x1="16" y1="2" x2="16" y2="6" />
+          <line x1="8" y1="2" x2="8" y2="6" />
+          <line x1="3" y1="10" x2="21" y2="10" />
+        </svg>
+      </div>
+      <div class="insight-item__content">
+        <dt class="insight-item__label">Most productive day</dt>
+        <dd class="insight-item__value">{{ _insights().mostProductiveDayOfWeek || '—' }}</dd>
+      </div>
+    </div>
+
+    <!-- Peak completion hour -->
+    <div class="insight-item">
+      <div class="insight-item__icon" aria-hidden="true">
+        <!-- Clock icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round" width="20" height="20">
+          <circle cx="12" cy="12" r="10" />
+          <polyline points="12 6 12 12 16 14" />
+        </svg>
+      </div>
+      <div class="insight-item__content">
+        <dt class="insight-item__label">Peak completion hour</dt>
+        <dd class="insight-item__value">{{ peakHourDisplay() }}</dd>
+      </div>
+    </div>
+
+    <!-- Completion velocity -->
+    <div class="insight-item">
+      <div class="insight-item__icon" aria-hidden="true">
+        <!-- Trending-up icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round" width="20" height="20">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+          <polyline points="17 6 23 6 23 12" />
+        </svg>
+      </div>
+      <div class="insight-item__content">
+        <dt class="insight-item__label">Completion velocity</dt>
+        <dd class="insight-item__value">
+          {{ velocityDisplay() }}
+          <span class="insight-item__unit">tasks / week</span>
+        </dd>
+      </div>
+    </div>
+
+    <!-- Average completion time -->
+    <div class="insight-item">
+      <div class="insight-item__icon" aria-hidden="true">
+        <!-- Hourglass icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round" width="20" height="20">
+          <path d="M5 22h14" />
+          <path d="M5 2h14" />
+          <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22" />
+          <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2" />
+        </svg>
+      </div>
+      <div class="insight-item__content">
+        <dt class="insight-item__label">Avg. completion time</dt>
+        <dd class="insight-item__value">
+          {{ avgDaysDisplay() }}
+          @if (_avgCompletionDays() > 0) {
+            <span class="insight-item__unit">days</span>
+          }
+        </dd>
+      </div>
+    </div>
+
+  </dl>
+</section>

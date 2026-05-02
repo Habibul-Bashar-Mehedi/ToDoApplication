@@ -1,0 +1,242 @@
+<section class="module-list" aria-label="Module list">
+
+  <!-- Page header -->
+  <div class="module-list__header">
+    <h1 class="module-list__title">Modules</h1>
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="openCreateModal()"
+      aria-label="Create a new module"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        width="16"
+        height="16"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+      New module
+    </button>
+  </div>
+
+  <!-- Loading state -->
+  @if (isLoading()) {
+    <div class="module-list__loading" aria-live="polite" aria-busy="true">
+      <app-loading-spinner label="Loading modules…" />
+    </div>
+  }
+
+  <!-- Module grid -->
+  @if (!isLoading()) {
+    @if (modules().length > 0) {
+      <ul class="module-list__grid" aria-label="Modules">
+        @for (module of modules(); track module.id) {
+          <li class="module-list__item">
+            <app-module-card
+              [module]="module"
+              [taskCount]="getTaskCount(module.id)"
+              [isOwner]="isOwner(module)"
+              (delete)="onDeleteModule($event)"
+            />
+          </li>
+        }
+      </ul>
+    } @else {
+      <!-- Empty state -->
+      <div class="module-list__empty" role="status" aria-live="polite">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          width="48"
+          height="48"
+          aria-hidden="true"
+          focusable="false"
+          class="module-list__empty-icon"
+        >
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+        <p class="module-list__empty-title">No modules yet</p>
+        <p class="module-list__empty-subtitle">
+          Create a module to organise your tasks into projects or categories.
+        </p>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="openCreateModal()"
+          aria-label="Create your first module"
+        >
+          Create module
+        </button>
+      </div>
+    }
+  }
+
+</section>
+
+<!-- Create module modal -->
+<app-modal
+  [isOpen]="showCreateModal()"
+  title="Create module"
+  (closed)="closeCreateModal()"
+>
+  <form
+    [formGroup]="createForm"
+    (ngSubmit)="submitCreate()"
+    id="create-module-form"
+    novalidate
+  >
+    <!-- Name -->
+    <div class="form-field">
+      <label class="form-label" for="module-name">
+        Name <span class="form-label--required" aria-hidden="true">*</span>
+      </label>
+      <input
+        id="module-name"
+        type="text"
+        class="form-input"
+        [class.form-input--error]="createForm.get('name')?.invalid && createForm.get('name')?.touched"
+        formControlName="name"
+        placeholder="e.g. Work Projects"
+        maxlength="100"
+        autocomplete="off"
+        aria-required="true"
+        [attr.aria-describedby]="createForm.get('name')?.invalid && createForm.get('name')?.touched ? 'module-name-error' : null"
+      />
+      @if (createForm.get('name')?.invalid && createForm.get('name')?.touched) {
+        <app-field-error
+          id="module-name-error"
+          [control]="createForm.get('name')!"
+          [messages]="{
+            required: 'Module name is required.',
+            maxlength: 'Module name must be at most 100 characters.',
+            conflict: 'You already have a module with this name.'
+          }"
+        />
+      }
+    </div>
+
+    <!-- Description -->
+    <div class="form-field">
+      <label class="form-label" for="module-description">
+        Description <span class="form-label--optional">(optional)</span>
+      </label>
+      <textarea
+        id="module-description"
+        class="form-textarea"
+        formControlName="description"
+        rows="3"
+        placeholder="Describe what this module is for…"
+        maxlength="500"
+        aria-describedby="module-description-hint"
+      ></textarea>
+      <span id="module-description-hint" class="form-hint">Up to 500 characters.</span>
+    </div>
+
+    <!-- Visibility -->
+    <div class="form-field">
+      <fieldset class="form-fieldset">
+        <legend class="form-label">Visibility</legend>
+        <div class="form-radio-group">
+          <label class="form-radio-label">
+            <input
+              type="radio"
+              class="form-radio"
+              formControlName="visibility"
+              value="PRIVATE"
+              aria-label="Private — only you can see this module"
+            />
+            <span class="form-radio-text">
+              <strong>Private</strong>
+              <span class="form-radio-hint">Only you can see this module</span>
+            </span>
+          </label>
+          <label class="form-radio-label">
+            <input
+              type="radio"
+              class="form-radio"
+              formControlName="visibility"
+              value="SHARED"
+              aria-label="Shared — visible to invited members"
+            />
+            <span class="form-radio-text">
+              <strong>Shared</strong>
+              <span class="form-radio-hint">Visible to invited members</span>
+            </span>
+          </label>
+        </div>
+      </fieldset>
+    </div>
+  </form>
+
+  <div modal-footer class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="closeCreateModal()"
+      aria-label="Cancel module creation"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      form="create-module-form"
+      class="btn btn-primary"
+      [disabled]="createForm.invalid || isSubmitting()"
+      aria-label="Create module"
+    >
+      @if (isSubmitting()) {
+        Creating…
+      } @else {
+        Create module
+      }
+    </button>
+  </div>
+</app-modal>
+
+<!-- Delete module modal -->
+<app-modal
+  [isOpen]="showDeleteModal()"
+  title="Delete module"
+  (closed)="closeDeleteModal()"
+>
+  <p class="modal-text">
+    Are you sure you want to delete
+    <strong>{{ deleteModuleName() }}</strong>?
+    This will also delete all tasks in this module. This action cannot be undone.
+  </p>
+
+  <div modal-footer class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="closeDeleteModal()"
+      aria-label="Keep module, do not delete"
+    >
+      Keep module
+    </button>
+    <button
+      type="button"
+      class="btn btn-danger"
+      (click)="confirmDelete()"
+      aria-label="Confirm module deletion"
+    >
+      Delete module
+    </button>
+  </div>
+</app-modal>

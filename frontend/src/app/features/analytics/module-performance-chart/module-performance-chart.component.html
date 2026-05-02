@@ -1,0 +1,40 @@
+<div class="chart-card">
+  <h3 class="chart-card__title">Module Performance</h3>
+
+  @if (_data().length === 0) {
+    <div class="chart-card__empty" role="status">No module data available for the selected range.</div>
+  } @else {
+    <div
+      class="chart-card__chart"
+      role="img"
+      aria-label="Bar chart showing completion rate per module"
+    >
+      <div
+        echarts
+        [options]="chartOptions()"
+        class="echarts-container"
+        [style.height.px]="chartHeight()"
+        aria-hidden="true"
+      ></div>
+    </div>
+
+    <!-- Visually-hidden data table (Req 13.1) -->
+    <table class="visually-hidden" aria-label="Module performance data">
+      <caption>Completion rate per module</caption>
+      <thead>
+        <tr>
+          <th scope="col">Module</th>
+          <th scope="col">Completion rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of _data(); track item.moduleId) {
+          <tr>
+            <td>{{ item.moduleName }}</td>
+            <td>{{ (item.completionRate * 100 | number:'1.0-0') }}%</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

@@ -1,0 +1,318 @@
+<!-- Loading state -->
+@if (isLoading()) {
+  <div class="module-detail__loading" aria-live="polite" aria-busy="true">
+    <app-loading-spinner label="Loading module…" />
+  </div>
+}
+
+@if (!isLoading() && module()) {
+  <div class="module-detail">
+
+    <!-- Breadcrumb -->
+    <nav class="module-detail__breadcrumb" aria-label="Breadcrumb">
+      <a routerLink="/modules" class="breadcrumb__link">Modules</a>
+      <span class="breadcrumb__separator" aria-hidden="true">/</span>
+      <span class="breadcrumb__current" aria-current="page">{{ module()!.name }}</span>
+    </nav>
+
+    <!-- Module header -->
+    <div class="module-detail__header">
+      <div class="module-detail__title-row">
+        <h1 class="module-detail__title">{{ module()!.name }}</h1>
+
+        <!-- Visibility badge -->
+        <span
+          class="module-detail__visibility"
+          [class.module-detail__visibility--shared]="module()!.visibility === 'SHARED'"
+          [class.module-detail__visibility--private]="module()!.visibility === 'PRIVATE'"
+          [attr.aria-label]="'Visibility: ' + module()!.visibility"
+        >
+          @if (module()!.visibility === 'PRIVATE') {
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" width="12" height="12" aria-hidden="true" focusable="false">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            Private
+          }
+          @if (module()!.visibility === 'SHARED') {
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" width="12" height="12" aria-hidden="true" focusable="false">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            Shared
+          }
+        </span>
+      </div>
+
+      @if (module()!.description) {
+        <p class="module-detail__description">{{ module()!.description }}</p>
+      }
+
+      <!-- Owner actions -->
+      @if (isOwner()) {
+        <div class="module-detail__actions" role="group" aria-label="Module actions">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="openEditModal()"
+            aria-label="Edit module settings"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" width="14" height="14" aria-hidden="true" focusable="false">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+            </svg>
+            Edit
+          </button>
+          <a
+            class="btn btn-primary"
+            [routerLink]="['/modules', module()!.id, 'share']"
+            aria-label="Share this module with others"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" width="14" height="14" aria-hidden="true" focusable="false">
+              <circle cx="18" cy="5" r="3" />
+              <circle cx="6" cy="12" r="3" />
+              <circle cx="18" cy="19" r="3" />
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+            </svg>
+            Share
+          </a>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="openDeleteModal()"
+            aria-label="Delete this module"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" width="14" height="14" aria-hidden="true" focusable="false">
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+              <path d="M10 11v6 M14 11v6" />
+              <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+            </svg>
+            Delete
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- Tab navigation -->
+    <div class="module-detail__tabs" role="tablist" aria-label="Module sections">
+      <button
+        type="button"
+        role="tab"
+        class="module-detail__tab"
+        [class.module-detail__tab--active]="activeTab() === 'tasks'"
+        [attr.aria-selected]="activeTab() === 'tasks'"
+        aria-controls="tab-panel-tasks"
+        id="tab-tasks"
+        (click)="setTab('tasks')"
+      >
+        Tasks
+      </button>
+
+      @if (canViewMembers()) {
+        <button
+          type="button"
+          role="tab"
+          class="module-detail__tab"
+          [class.module-detail__tab--active]="activeTab() === 'members'"
+          [attr.aria-selected]="activeTab() === 'members'"
+          aria-controls="tab-panel-members"
+          id="tab-members"
+          (click)="setTab('members')"
+        >
+          Members
+          @if (members().length > 0) {
+            <span class="module-detail__tab-count" aria-label="{{ members().length }} members">
+              {{ members().length }}
+            </span>
+          }
+        </button>
+      }
+    </div>
+
+    <!-- Tasks tab panel -->
+    <div
+      id="tab-panel-tasks"
+      role="tabpanel"
+      aria-labelledby="tab-tasks"
+      [hidden]="activeTab() !== 'tasks'"
+      class="module-detail__panel"
+    >
+      <!--
+        Scoped TaskListComponent: the task list is pre-filtered to this module.
+        The filter bar inside TaskListComponent allows further filtering within
+        the module scope.
+      -->
+      <app-task-list />
+    </div>
+
+    <!-- Members tab panel -->
+    @if (canViewMembers()) {
+      <div
+        id="tab-panel-members"
+        role="tabpanel"
+        aria-labelledby="tab-members"
+        [hidden]="activeTab() !== 'members'"
+        class="module-detail__panel"
+      >
+        @if (isMembersLoading()) {
+          <div class="module-detail__members-loading" aria-live="polite" aria-busy="true">
+            <app-loading-spinner label="Loading members…" />
+          </div>
+        } @else {
+          <div class="module-detail__members-section">
+            <app-module-member-list
+              [members]="members()"
+              [ownerId]="module()!.ownerId"
+              [currentUserId]="currentUserId()!"
+              [canManage]="canManageMembers()"
+              (permissionChanged)="onPermissionChanged($event)"
+              (memberRemoved)="onMemberRemoved($event)"
+            />
+
+            @if (canManageMembers()) {
+              <div class="module-detail__invite-cta">
+                <a
+                  class="btn btn-primary"
+                  [routerLink]="['/modules', module()!.id, 'share']"
+                  aria-label="Invite more members to this module"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" width="14" height="14" aria-hidden="true" focusable="false">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="8.5" cy="7" r="4" />
+                    <line x1="20" y1="8" x2="20" y2="14" />
+                    <line x1="23" y1="11" x2="17" y2="11" />
+                  </svg>
+                  Invite member
+                </a>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+}
+<!-- Edit module modal -->
+<app-modal
+  [isOpen]="showEditModal()"
+  title="Edit module"
+  (closed)="closeEditModal()"
+>
+  <form
+    [formGroup]="editForm"
+    (ngSubmit)="submitEdit()"
+    id="edit-module-form"
+    novalidate
+  >
+    <!-- Name -->
+    <div class="form-field">
+      <label class="form-label" for="edit-module-name">
+        Name <span class="form-label--required" aria-hidden="true">*</span>
+      </label>
+      <input
+        id="edit-module-name"
+        type="text"
+        class="form-input"
+        [class.form-input--error]="editForm.get('name')?.invalid && editForm.get('name')?.touched"
+        formControlName="name"
+        maxlength="100"
+        autocomplete="off"
+        aria-required="true"
+        [attr.aria-describedby]="editForm.get('name')?.invalid && editForm.get('name')?.touched ? 'edit-module-name-error' : null"
+      />
+      @if (editForm.get('name')?.invalid && editForm.get('name')?.touched) {
+        <app-field-error
+          id="edit-module-name-error"
+          [control]="editForm.get('name')!"
+          [messages]="{
+            required: 'Module name is required.',
+            maxlength: 'Module name must be at most 100 characters.',
+            conflict: 'You already have a module with this name.'
+          }"
+        />
+      }
+    </div>
+
+    <!-- Description -->
+    <div class="form-field">
+      <label class="form-label" for="edit-module-description">
+        Description <span class="form-label--optional">(optional)</span>
+      </label>
+      <textarea
+        id="edit-module-description"
+        class="form-textarea"
+        formControlName="description"
+        rows="3"
+        maxlength="500"
+      ></textarea>
+    </div>
+  </form>
+
+  <div modal-footer class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="closeEditModal()"
+      aria-label="Cancel editing"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      form="edit-module-form"
+      class="btn btn-primary"
+      [disabled]="editForm.invalid || isEditSubmitting()"
+      aria-label="Save module changes"
+    >
+      @if (isEditSubmitting()) { Saving… } @else { Save changes }
+    </button>
+  </div>
+</app-modal>
+
+<!-- Delete module modal -->
+<app-modal
+  [isOpen]="showDeleteModal()"
+  title="Delete module"
+  (closed)="closeDeleteModal()"
+>
+  <p class="modal-text">
+    Are you sure you want to delete <strong>{{ module()?.name }}</strong>?
+    This will also delete all tasks in this module. This action cannot be undone.
+  </p>
+
+  <div modal-footer class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="closeDeleteModal()"
+      aria-label="Keep module, do not delete"
+    >
+      Keep module
+    </button>
+    <button
+      type="button"
+      class="btn btn-danger"
+      (click)="confirmDelete()"
+      aria-label="Confirm module deletion"
+    >
+      Delete module
+    </button>
+  </div>
+</app-modal>

@@ -1,0 +1,150 @@
+<!-- Loading state -->
+@if (isLoading()) {
+  <div class="module-share__loading" aria-live="polite" aria-busy="true">
+    <app-loading-spinner label="Loading module…" />
+  </div>
+}
+
+@if (!isLoading() && module()) {
+  <div class="module-share">
+
+    <!-- Breadcrumb -->
+    <nav class="module-share__breadcrumb" aria-label="Breadcrumb">
+      <a routerLink="/modules" class="breadcrumb__link">Modules</a>
+      <span class="breadcrumb__separator" aria-hidden="true">/</span>
+      <a
+        [routerLink]="['/modules', module()!.id]"
+        class="breadcrumb__link"
+      >
+        {{ module()!.name }}
+      </a>
+      <span class="breadcrumb__separator" aria-hidden="true">/</span>
+      <span class="breadcrumb__current" aria-current="page">Share</span>
+    </nav>
+
+    <!-- Page header -->
+    <div class="module-share__header">
+      <h1 class="module-share__title">Share "{{ module()!.name }}"</h1>
+      <p class="module-share__subtitle">
+        Invite people to collaborate on this module. They'll receive an in-app
+        notification with your invitation.
+      </p>
+    </div>
+
+    <!-- Main content: two-column layout on wider screens -->
+    <div class="module-share__content">
+
+      <!-- Left: Invitation form -->
+      <section class="module-share__invite-section" aria-labelledby="invite-section-heading">
+        <h2 id="invite-section-heading" class="module-share__section-title">
+          Invite a member
+        </h2>
+        <div class="module-share__form-card">
+          <app-invitation-form (invite)="onInvite($event)" />
+        </div>
+      </section>
+
+      <!-- Right: Pending invitations -->
+      <section class="module-share__pending-section" aria-labelledby="pending-section-heading">
+        <h2 id="pending-section-heading" class="module-share__section-title">
+          Pending invitations
+          @if (pendingInvitations().length > 0) {
+            <span
+              class="module-share__count-badge"
+              aria-label="{{ pendingInvitations().length }} pending"
+            >
+              {{ pendingInvitations().length }}
+            </span>
+          }
+        </h2>
+
+        @if (isInvitationsLoading()) {
+          <div class="module-share__invitations-loading" aria-live="polite" aria-busy="true">
+            <app-loading-spinner label="Loading invitations…" />
+          </div>
+        } @else if (pendingInvitations().length === 0) {
+          <div class="module-share__empty" role="status">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              width="40"
+              height="40"
+              class="module-share__empty-icon"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16.92z" />
+            </svg>
+            <p class="module-share__empty-text">No pending invitations</p>
+            <p class="module-share__empty-hint">
+              Invitations you send will appear here until they are accepted or rejected.
+            </p>
+          </div>
+        } @else {
+          <ul class="module-share__invitation-list" aria-label="Pending invitations">
+            @for (invitation of pendingInvitations(); track trackById($index, invitation)) {
+              <li class="module-share__invitation-item">
+
+                <!-- Invitee avatar / initials -->
+                <div
+                  class="module-share__avatar"
+                  aria-hidden="true"
+                >
+                  {{ invitation.inviteeEmail.charAt(0).toUpperCase() }}
+                </div>
+
+                <!-- Invitee info -->
+                <div class="module-share__invitation-info">
+                  <span class="module-share__invitation-email">
+                    {{ invitation.inviteeEmail }}
+                  </span>
+                  <span class="module-share__invitation-meta">
+                    Invited {{ formatDate(invitation.invitedAt) }}
+                    · by {{ invitation.inviterDisplayName }}
+                  </span>
+                </div>
+
+                <!-- Permission level badge -->
+                <span
+                  class="permission-badge {{ permissionClass(invitation.permissionLevel) }}"
+                  [attr.aria-label]="'Permission: ' + permissionLabel(invitation.permissionLevel)"
+                >
+                  {{ permissionLabel(invitation.permissionLevel) }}
+                </span>
+
+                <!-- Status badge -->
+                <span class="status-badge status-badge--pending" aria-label="Status: Pending">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    width="12"
+                    height="12"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  Pending
+                </span>
+
+              </li>
+            }
+          </ul>
+        }
+      </section>
+
+    </div>
+
+  </div>
+}

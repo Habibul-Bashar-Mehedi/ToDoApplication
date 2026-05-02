@@ -1,0 +1,325 @@
+<div class="notification-centre" aria-label="Notification centre">
+
+  <!-- ── Page header ──────────────────────────────────────────────────────── -->
+  <header class="notification-centre__header">
+    <div class="notification-centre__title-row">
+      <h1 class="notification-centre__title">
+        <!-- Bell icon -->
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          width="24"
+          height="24"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+        </svg>
+        Notifications
+        @if (totalElements() > 0) {
+          <span class="notification-centre__count" aria-label="{{ totalElements() }} total notifications">
+            {{ totalElements() }}
+          </span>
+        }
+      </h1>
+
+      <!-- Mark all read button — Req 8.9 -->
+      <button
+        type="button"
+        class="btn btn-secondary"
+        [disabled]="isMarkingAllRead() || notifications().length === 0"
+        (click)="onMarkAllRead()"
+        aria-label="Mark all notifications as read"
+      >
+        @if (isMarkingAllRead()) {
+          <span aria-hidden="true">Marking…</span>
+          <span class="sr-only">Marking all notifications as read</span>
+        } @else {
+          Mark all as read
+        }
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Notification list ────────────────────────────────────────────────── -->
+  <section class="notification-centre__list-section" aria-label="Notification list">
+
+    @if (isLoading()) {
+      <div class="notification-centre__loading" aria-live="polite" aria-busy="true">
+        <app-loading-spinner label="Loading notifications…" />
+      </div>
+    }
+
+    @if (!isLoading()) {
+      @if (notifications().length > 0) {
+        <!-- Req 8.7: reverse-chronological order (API returns newest first) -->
+        <ul
+          class="notification-centre__items"
+          aria-label="Notifications, newest first"
+          role="list"
+        >
+          @for (notification of notifications(); track notification.id) {
+            <app-notification-item
+              [notification]="notification"
+              (markRead)="onMarkRead($event)"
+            />
+          }
+        </ul>
+
+        <!-- Pagination controls -->
+        @if (totalPages() > 1) {
+          <nav
+            class="notification-centre__pagination"
+            aria-label="Notification pagination"
+          >
+            <button
+              type="button"
+              class="btn btn-secondary btn-sm"
+              [disabled]="!hasPreviousPage()"
+              (click)="goToPreviousPage()"
+              aria-label="Go to previous page of notifications"
+            >
+              <!-- Chevron left -->
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                width="16"
+                height="16"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+              Previous
+            </button>
+
+            <span
+              class="notification-centre__page-info"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              Page {{ currentPage() + 1 }} of {{ totalPages() }}
+            </span>
+
+            <button
+              type="button"
+              class="btn btn-secondary btn-sm"
+              [disabled]="!hasNextPage()"
+              (click)="goToNextPage()"
+              aria-label="Go to next page of notifications"
+            >
+              Next
+              <!-- Chevron right -->
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                width="16"
+                height="16"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+          </nav>
+        }
+
+      } @else {
+        <!-- Empty state -->
+        <div class="notification-centre__empty" role="status" aria-live="polite">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            width="48"
+            height="48"
+            aria-hidden="true"
+            focusable="false"
+            class="notification-centre__empty-icon"
+          >
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <p class="notification-centre__empty-title">You're all caught up</p>
+          <p class="notification-centre__empty-subtitle">
+            No notifications yet. Reminders and updates will appear here.
+          </p>
+        </div>
+      }
+    }
+  </section>
+
+  <!-- ── Notification preferences ─────────────────────────────────────────── -->
+  <!-- Req 8.11: 5 boolean toggles for reminder types -->
+  <section
+    class="notification-centre__preferences"
+    aria-label="Notification preferences"
+  >
+    <h2 class="notification-centre__section-title">Notification preferences</h2>
+    <p class="notification-centre__section-desc">
+      Choose which reminder types you want to receive.
+    </p>
+
+    @if (isLoadingPreferences()) {
+      <div aria-live="polite" aria-busy="true">
+        <app-loading-spinner label="Loading preferences…" size="sm" />
+      </div>
+    }
+
+    @if (!isLoadingPreferences()) {
+      <form
+        [formGroup]="preferencesForm"
+        (ngSubmit)="onSavePreferences()"
+        aria-label="Notification preference settings"
+        novalidate
+      >
+        <fieldset class="notification-centre__toggles">
+          <legend class="sr-only">Reminder types</legend>
+
+          <!-- 15-minute reminder -->
+          <label class="toggle-row" for="pref-15min">
+            <span class="toggle-row__label">
+              <span class="toggle-row__name">15-minute reminder</span>
+              <span class="toggle-row__desc">Notify me 15 minutes before a task is due</span>
+            </span>
+            <input
+              type="checkbox"
+              id="pref-15min"
+              class="toggle-row__checkbox"
+              formControlName="reminder15minEnabled"
+              role="switch"
+              [attr.aria-checked]="preferencesForm.get('reminder15minEnabled')?.value"
+            />
+          </label>
+
+          <!-- 1-hour reminder -->
+          <label class="toggle-row" for="pref-1hour">
+            <span class="toggle-row__label">
+              <span class="toggle-row__name">1-hour reminder</span>
+              <span class="toggle-row__desc">Notify me 1 hour before a task is due</span>
+            </span>
+            <input
+              type="checkbox"
+              id="pref-1hour"
+              class="toggle-row__checkbox"
+              formControlName="reminder1hourEnabled"
+              role="switch"
+              [attr.aria-checked]="preferencesForm.get('reminder1hourEnabled')?.value"
+            />
+          </label>
+
+          <!-- 1-day reminder -->
+          <label class="toggle-row" for="pref-1day">
+            <span class="toggle-row__label">
+              <span class="toggle-row__name">1-day reminder</span>
+              <span class="toggle-row__desc">Notify me 1 day before a task is due</span>
+            </span>
+            <input
+              type="checkbox"
+              id="pref-1day"
+              class="toggle-row__checkbox"
+              formControlName="reminder1dayEnabled"
+              role="switch"
+              [attr.aria-checked]="preferencesForm.get('reminder1dayEnabled')?.value"
+            />
+          </label>
+
+          <!-- 2-day reminder -->
+          <label class="toggle-row" for="pref-2days">
+            <span class="toggle-row__label">
+              <span class="toggle-row__name">2-day reminder</span>
+              <span class="toggle-row__desc">Notify me 2 days before a task is due</span>
+            </span>
+            <input
+              type="checkbox"
+              id="pref-2days"
+              class="toggle-row__checkbox"
+              formControlName="reminder2daysEnabled"
+              role="switch"
+              [attr.aria-checked]="preferencesForm.get('reminder2daysEnabled')?.value"
+            />
+          </label>
+
+          <!-- Overdue notifications -->
+          <label class="toggle-row" for="pref-overdue">
+            <span class="toggle-row__label">
+              <span class="toggle-row__name">Overdue alerts</span>
+              <span class="toggle-row__desc">Notify me when a task becomes overdue</span>
+            </span>
+            <input
+              type="checkbox"
+              id="pref-overdue"
+              class="toggle-row__checkbox"
+              formControlName="overdueEnabled"
+              role="switch"
+              [attr.aria-checked]="preferencesForm.get('overdueEnabled')?.value"
+            />
+          </label>
+        </fieldset>
+
+        <div class="notification-centre__pref-actions">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="isSavingPreferences()"
+            aria-label="Save notification preferences"
+          >
+            @if (isSavingPreferences()) {
+              <span aria-hidden="true">Saving…</span>
+              <span class="sr-only">Saving preferences</span>
+            } @else {
+              Save preferences
+            }
+          </button>
+
+          @if (preferencesSaved()) {
+            <span
+              class="notification-centre__saved-msg"
+              role="status"
+              aria-live="polite"
+            >
+              <!-- Checkmark icon -->
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                width="16"
+                height="16"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              Preferences saved
+            </span>
+          }
+        </div>
+      </form>
+    }
+  </section>
+
+</div>

@@ -1,0 +1,223 @@
+@use '../../../../styles/variables' as *;
+
+// ─── Task Card ───────────────────────────────────────────────────────────────
+
+.task-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  box-shadow: $shadow-sm;
+  padding: $spacing-4;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+  transition: box-shadow 0.15s ease;
+
+  &:hover {
+    box-shadow: $shadow-md;
+  }
+
+  // Req 5.6: COMPLETED — strikethrough title
+  &--completed {
+    .task-card__title {
+      text-decoration: line-through;
+      color: var(--color-text-secondary);
+    }
+  }
+
+  // Req 5.6: CANCELLED — greyed-out entire card
+  &--cancelled {
+    opacity: 0.6;
+
+    .task-card__title {
+      color: var(--color-text-secondary);
+    }
+  }
+}
+
+// ─── Header ──────────────────────────────────────────────────────────────────
+
+.task-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-3;
+}
+
+.task-card__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  line-height: 1.4;
+  flex: 1;
+
+  &:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: $radius-sm;
+  }
+}
+
+.task-card__badges {
+  display: flex;
+  gap: $spacing-2;
+  flex-shrink: 0;
+}
+
+// ─── Meta ─────────────────────────────────────────────────────────────────────
+
+.task-card__meta {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+  flex-wrap: wrap;
+}
+
+.task-card__module {
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.task-card__due-date {
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+
+  &--overdue {
+    color: var(--color-danger);
+    font-weight: 500;
+  }
+}
+
+// ─── Description ─────────────────────────────────────────────────────────────
+
+.task-card__description {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+  // Clamp to 3 lines
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// ─── Tags ─────────────────────────────────────────────────────────────────────
+
+.task-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-2;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.task-card__tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px $spacing-2;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-full;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+// ─── Cancellation reason ──────────────────────────────────────────────────────
+
+.task-card__cancel-reason {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+// ─── Actions ─────────────────────────────────────────────────────────────────
+
+.task-card__actions {
+  display: flex;
+  gap: $spacing-2;
+  flex-wrap: wrap;
+  margin-top: $spacing-1;
+}
+
+// ─── Button utilities (scoped) ────────────────────────────────────────────────
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  border: none;
+  border-radius: $radius-sm;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  min-height: 44px; // WCAG 2.5.5 minimum touch target
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+  text-decoration: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-sm {
+  padding: $spacing-1 $spacing-3;
+  min-height: 44px; // WCAG 2.5.5 minimum touch target
+}
+
+.btn-success {
+  background: var(--color-success);
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: #15803d;
+  }
+}
+
+.btn-secondary {
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+
+  &:hover:not(:disabled) {
+    background: var(--color-border);
+  }
+}
+
+.btn-warning {
+  background: var(--color-warning-btn); // Amber 700 — white text passes WCAG AA contrast
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: #92400e; // Amber 800
+  }
+}
+
+.btn-danger {
+  background: var(--color-danger);
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: #b91c1c;
+  }
+}

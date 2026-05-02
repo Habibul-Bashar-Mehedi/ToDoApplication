@@ -1,0 +1,416 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+// =============================================================================
+// Dashboard layout
+// =============================================================================
+
+.dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-6 $spacing-4;
+
+  @include tablet {
+    padding: $spacing-8 $spacing-6;
+  }
+
+  @include desktop {
+    padding: $spacing-10 $spacing-8;
+  }
+}
+
+// =============================================================================
+// Page header
+// =============================================================================
+
+.dashboard-header {
+  @include flex-between;
+  flex-wrap: wrap;
+  gap: $spacing-4;
+  margin-bottom: $spacing-8;
+}
+
+.header-text {
+  min-width: 0;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 $spacing-1;
+
+  @include tablet {
+    font-size: 1.875rem;
+  }
+}
+
+.page-subtitle {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  flex-shrink: 0;
+}
+
+// =============================================================================
+// Sections
+// =============================================================================
+
+.dashboard-section {
+  margin-bottom: $spacing-8;
+}
+
+.section-header {
+  @include flex-between;
+  margin-bottom: $spacing-4;
+}
+
+.section-title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 $spacing-4;
+}
+
+.section-link {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--color-primary-hover);
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+    border-radius: $radius-sm;
+  }
+}
+
+// =============================================================================
+// Two-column grid (quick-add + upcoming tasks)
+// =============================================================================
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-6;
+  margin-bottom: $spacing-8;
+
+  @include desktop {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+// =============================================================================
+// Loading placeholder
+// =============================================================================
+
+.loading-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-lg;
+}
+
+// =============================================================================
+// Empty state
+// =============================================================================
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-3;
+  padding: $spacing-8 $spacing-6;
+  background-color: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: $radius-lg;
+  text-align: center;
+}
+
+.empty-state__icon {
+  color: var(--color-text-secondary);
+  opacity: 0.5;
+}
+
+.empty-state__message {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.link {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+
+  &:hover {
+    color: var(--color-primary-hover);
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+    border-radius: $radius-sm;
+  }
+}
+
+// =============================================================================
+// Upcoming task list
+// =============================================================================
+
+.task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-lg;
+  overflow: hidden;
+}
+
+.task-item {
+  border-bottom: 1px solid var(--color-border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.task-link {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  padding: $spacing-3 $spacing-5;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.15s ease;
+  min-height: 44px; // WCAG touch target
+
+  &:hover {
+    background-color: var(--color-background);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+    border-radius: 0;
+    outline-offset: -2px;
+  }
+}
+
+// Priority dot — uses shape + color (never color alone, WCAG 1.4.1)
+.priority-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: $radius-full;
+  flex-shrink: 0;
+
+  &--high {
+    background-color: var(--color-danger);
+    // Diamond shape for HIGH to distinguish from color alone
+    border-radius: 2px;
+    transform: rotate(45deg);
+  }
+
+  &--medium {
+    background-color: var(--color-warning);
+  }
+
+  &--low {
+    background-color: var(--color-success);
+    // Triangle-ish via clip-path
+    border-radius: 0 $radius-full $radius-full $radius-full;
+  }
+}
+
+.task-title {
+  flex: 1 1 auto;
+  font-size: 0.9375rem;
+  color: var(--color-text-primary);
+  @include truncate;
+}
+
+.task-meta {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  flex-shrink: 0;
+}
+
+.task-module {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  @include truncate;
+  max-width: 120px;
+}
+
+.task-due {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+// =============================================================================
+// Module shortcuts list
+// =============================================================================
+
+.module-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-3;
+
+  @include tablet {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.module-card {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-lg;
+  overflow: hidden;
+  transition: box-shadow 0.15s ease;
+
+  &:hover {
+    box-shadow: $shadow-md;
+  }
+}
+
+.module-card__link {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+  padding: $spacing-4 $spacing-5;
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+
+  &:focus-visible {
+    @include focus-ring;
+    border-radius: 0;
+    outline-offset: -2px;
+  }
+}
+
+.module-card__name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  @include truncate;
+}
+
+.module-card__visibility {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+
+  &--shared {
+    color: var(--color-primary);
+  }
+}
+
+.module-card__share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  padding: $spacing-3 $spacing-4;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  text-decoration: none;
+  border-left: 1px solid var(--color-border);
+  white-space: nowrap;
+  min-height: 44px; // WCAG touch target
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    color: var(--color-primary-hover);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+    border-radius: 0;
+    outline-offset: -2px;
+  }
+}
+
+// =============================================================================
+// Buttons
+// =============================================================================
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-2;
+  padding: $spacing-2 $spacing-4;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border-radius: $radius-md;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+  min-height: 44px; // WCAG touch target
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #ffffff;
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+  }
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+
+  &:hover {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+  }
+}
+
+// =============================================================================
+// Visually hidden (screen-reader only)
+// =============================================================================
+
+.visually-hidden {
+  @include visually-hidden;
+}

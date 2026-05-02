@@ -1,0 +1,414 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+// =============================================================================
+// Task Detail — BEM block
+// =============================================================================
+
+.task-detail {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: $spacing-4;
+
+  @include tablet {
+    padding: $spacing-6;
+  }
+
+  @include desktop {
+    padding: $spacing-8;
+  }
+
+  // ── Loading / not-found wrappers ──────────────────────────────────────────
+
+  &__loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+  }
+
+  &__not-found {
+    max-width: 480px;
+    margin: $spacing-12 auto;
+    text-align: center;
+  }
+
+  &__not-found-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: $spacing-3;
+  }
+
+  &__not-found-text {
+    color: var(--color-text-secondary);
+    margin-bottom: $spacing-5;
+  }
+
+  // ── Back link ─────────────────────────────────────────────────────────────
+
+  &__back {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-1;
+    color: var(--color-primary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: $spacing-5;
+
+    &:hover {
+      color: var(--color-primary-hover);
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+      border-radius: $radius-sm;
+    }
+  }
+
+  // ── Header ────────────────────────────────────────────────────────────────
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: $spacing-4;
+    margin-bottom: $spacing-6;
+    flex-wrap: wrap;
+  }
+
+  &__header-left {
+    flex: 1;
+    min-width: 0;
+  }
+
+  // ── Title ─────────────────────────────────────────────────────────────────
+
+  &__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1.3;
+    margin: 0 0 $spacing-3;
+    word-break: break-word;
+
+    &--completed {
+      text-decoration: line-through;
+      color: var(--color-text-secondary);
+    }
+
+    &--cancelled {
+      color: var(--color-text-secondary);
+      opacity: 0.7;
+    }
+  }
+
+  // ── Badges ────────────────────────────────────────────────────────────────
+
+  &__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-2;
+    align-items: center;
+  }
+
+  // ── Actions ───────────────────────────────────────────────────────────────
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-2;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  // ── Meta section ──────────────────────────────────────────────────────────
+
+  &__meta {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-3;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: $radius-md;
+    padding: $spacing-5;
+    margin-bottom: $spacing-6;
+    box-shadow: $shadow-sm;
+
+    @include tablet {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  &__meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-1;
+  }
+
+  &__meta-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-secondary);
+  }
+
+  &__meta-value {
+    font-size: 0.9375rem;
+    color: var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    flex-wrap: wrap;
+
+    &--overdue {
+      color: var(--color-danger);
+      font-weight: 500;
+    }
+  }
+
+  &__meta-by {
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+
+    strong {
+      color: var(--color-text-primary);
+      font-weight: 600;
+    }
+  }
+
+  &__overdue-badge {
+    display: inline-block;
+    background: var(--color-danger);
+    color: #fff;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 2px $spacing-2;
+    border-radius: $radius-full;
+  }
+
+  &__link {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      color: var(--color-primary-hover);
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+      border-radius: $radius-sm;
+    }
+  }
+
+  // ── Sections (description, reminders, tags, cancel reason) ───────────────
+
+  &__section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: $radius-md;
+    padding: $spacing-5;
+    margin-bottom: $spacing-4;
+    box-shadow: $shadow-sm;
+  }
+
+  &__section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 $spacing-3;
+  }
+
+  // ── Description ───────────────────────────────────────────────────────────
+
+  &__description {
+    font-size: 0.9375rem;
+    color: var(--color-text-primary);
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+  }
+
+  // ── Reminders ─────────────────────────────────────────────────────────────
+
+  &__reminders {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+  }
+
+  &__reminder-item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    font-size: 0.9375rem;
+    color: var(--color-text-primary);
+
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: $radius-full;
+      background: var(--color-primary);
+      flex-shrink: 0;
+    }
+  }
+
+  // ── Tags ──────────────────────────────────────────────────────────────────
+
+  &__tags {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-2;
+  }
+
+  &__tag {
+    display: inline-flex;
+    align-items: center;
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: $radius-full;
+    padding: $spacing-1 $spacing-3;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+  }
+
+  // ── Cancellation reason ───────────────────────────────────────────────────
+
+  &__cancel-reason {
+    font-size: 0.9375rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    font-style: italic;
+  }
+
+  // ── Modal fields ──────────────────────────────────────────────────────────
+
+  &__modal-field {
+    margin-top: $spacing-4;
+  }
+
+  &__modal-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: $spacing-2;
+  }
+
+  &__modal-textarea {
+    width: 100%;
+    padding: $spacing-2 $spacing-3;
+    border: 1px solid var(--color-border);
+    border-radius: $radius-md;
+    font-size: 0.9375rem;
+    color: var(--color-text-primary);
+    background: var(--color-surface);
+    resize: vertical;
+    min-height: 80px;
+    box-sizing: border-box;
+    font-family: inherit;
+    line-height: 1.5;
+
+    &:focus {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 0;
+      border-color: var(--color-primary);
+    }
+  }
+
+  &__modal-hint {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    margin: $spacing-1 0 0;
+  }
+}
+
+// =============================================================================
+// Button styles
+// =============================================================================
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-2;
+  padding: $spacing-2 $spacing-4;
+  border: none;
+  border-radius: $radius-md;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 44px; // WCAG 2.5.5 minimum touch target
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+  white-space: nowrap;
+  text-decoration: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &-success {
+    background: var(--color-success);
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      background: #15803d;
+    }
+  }
+
+  &-secondary {
+    background: var(--color-background);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+
+    &:hover:not(:disabled) {
+      background: var(--color-border);
+    }
+  }
+
+  &-warning {
+    background: var(--color-warning-btn); // Amber 700 — white text passes WCAG AA contrast
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      background: #92400e; // Amber 800
+    }
+  }
+
+  &-danger {
+    background: var(--color-danger);
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      background: #b91c1c;
+    }
+  }
+}

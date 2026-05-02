@@ -5,9 +5,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:todoapp}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:db_ToDoApplication}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:password}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -49,18 +49,36 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        # Expose health (public), info (public), and metrics (admin-only via SecurityConfig)
+        include: health,info,metrics
+      base-path: /actuator
   endpoint:
     health:
       show-details: when-authorized
 
 app:
   jwt:
-    secret: ${JWT_SECRET}
+    secret: ${JWT_SECRET:dev-secret-key-at-least-32-characters-long-for-hs256}
     expiration: 1800000
     remember-me-expiration: 604800000
+  mail:
+    # Set to true only when a real SMTP server is configured (production).
+    # When false: emails are logged to console and new users are auto-verified.
+    enabled: ${MAIL_ENABLED:false}
 
 logging:
   level:
     root: INFO
     com.todoapp: DEBUG
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    # Disable the "Try it out" default expansion to reduce noise
+    operations-sorter: alpha
+  # Include actuator endpoints in the OpenAPI spec
+  show-actuator: false
+
+JWT_SECRET: 75245a30c07c749b235d767852843d7cf619107909c087a5e131f26e9ac9771d

@@ -1,0 +1,313 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+// =============================================================================
+// Notification Centre Page
+// =============================================================================
+
+.notification-centre {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: $spacing-6;
+
+  @include tablet {
+    padding: $spacing-8;
+  }
+}
+
+// ── Header ──────────────────────────────────────────────────────────────────
+
+.notification-centre__header {
+  margin-bottom: $spacing-6;
+}
+
+.notification-centre__title-row {
+  @include flex-between;
+  gap: $spacing-4;
+  flex-wrap: wrap;
+}
+
+.notification-centre__title {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.notification-centre__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 $spacing-2;
+  border-radius: $radius-full;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+// ── List section ─────────────────────────────────────────────────────────────
+
+.notification-centre__list-section {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  overflow: hidden;
+  margin-bottom: $spacing-8;
+  box-shadow: $shadow-sm;
+}
+
+.notification-centre__loading {
+  display: flex;
+  justify-content: center;
+  padding: $spacing-12;
+}
+
+.notification-centre__items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+// ── Empty state ──────────────────────────────────────────────────────────────
+
+.notification-centre__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-3;
+  padding: $spacing-12 $spacing-6;
+  text-align: center;
+}
+
+.notification-centre__empty-icon {
+  color: var(--color-text-secondary);
+  opacity: 0.4;
+}
+
+.notification-centre__empty-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.notification-centre__empty-subtitle {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  max-width: 320px;
+}
+
+// ── Pagination ───────────────────────────────────────────────────────────────
+
+.notification-centre__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-4;
+  padding: $spacing-4;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-background);
+}
+
+.notification-centre__page-info {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+// ── Preferences section ──────────────────────────────────────────────────────
+
+.notification-centre__preferences {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  padding: $spacing-6;
+  box-shadow: $shadow-sm;
+}
+
+.notification-centre__section-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 $spacing-1;
+}
+
+.notification-centre__section-desc {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 $spacing-5;
+}
+
+// ── Toggle rows ──────────────────────────────────────────────────────────────
+
+.notification-centre__toggles {
+  border: none;
+  padding: 0;
+  margin: 0 0 $spacing-5;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-4;
+  padding: $spacing-4 0;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover .toggle-row__name {
+    color: var(--color-primary);
+  }
+}
+
+.toggle-row__label {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+  flex: 1;
+}
+
+.toggle-row__name {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  transition: color 0.15s ease;
+}
+
+.toggle-row__desc {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+// Custom toggle-style checkbox
+.toggle-row__checkbox {
+  // Hide native checkbox visually but keep it accessible
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  flex-shrink: 0;
+  width: 44px;
+  height: 24px;
+  border-radius: $radius-full;
+  background: var(--color-border);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  min-width: 44px; // WCAG 2.5.5 minimum touch target
+
+  // Thumb
+  &::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: $radius-full;
+    background: #fff;
+    box-shadow: $shadow-sm;
+    transition: transform 0.2s ease;
+  }
+
+  &:checked {
+    background: var(--color-primary);
+
+    &::after {
+      transform: translateX(20px);
+    }
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+// ── Preferences actions ──────────────────────────────────────────────────────
+
+.notification-centre__pref-actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+  flex-wrap: wrap;
+}
+
+.notification-centre__saved-msg {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  font-size: 0.875rem;
+  color: var(--color-success);
+  font-weight: 500;
+}
+
+// ── Utility ──────────────────────────────────────────────────────────────────
+
+.sr-only {
+  @include visually-hidden;
+}
+
+// =============================================================================
+// Button utilities (scoped to this component)
+// =============================================================================
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-2 $spacing-4;
+  border: none;
+  border-radius: $radius-sm;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  min-height: 44px; // WCAG 2.5.5 minimum touch target
+  transition: background-color 0.15s ease;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: var(--color-primary-hover);
+  }
+}
+
+.btn-secondary {
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+
+  &:hover:not(:disabled) {
+    background: var(--color-border);
+  }
+}
+
+.btn-sm {
+  padding: $spacing-1 $spacing-3;
+  font-size: 0.8125rem;
+  min-height: 44px; // WCAG 2.5.5 minimum touch target
+}

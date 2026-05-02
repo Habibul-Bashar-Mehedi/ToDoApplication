@@ -1,0 +1,158 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+// =============================================================================
+// Analytics Dashboard layout
+// =============================================================================
+
+.analytics-dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-6 $spacing-4;
+
+  @include tablet {
+    padding: $spacing-8 $spacing-6;
+  }
+
+  @include desktop {
+    padding: $spacing-10 $spacing-8;
+  }
+}
+
+// =============================================================================
+// Page header
+// =============================================================================
+
+.analytics-dashboard__header {
+  margin-bottom: $spacing-8;
+}
+
+.analytics-dashboard__title-row {
+  @include flex-between;
+  flex-wrap: wrap;
+  gap: $spacing-4;
+  margin-bottom: $spacing-5;
+}
+
+.analytics-dashboard__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 $spacing-1;
+
+  @include tablet {
+    font-size: 1.875rem;
+  }
+}
+
+.analytics-dashboard__subtitle {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.analytics-dashboard__range-selector {
+  // Contained within the header
+}
+
+// =============================================================================
+// Loading state
+// =============================================================================
+
+.analytics-dashboard__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+// =============================================================================
+// Sections
+// =============================================================================
+
+.analytics-dashboard__section {
+  margin-bottom: $spacing-6;
+}
+
+// =============================================================================
+// Charts grid — 2-column on desktop, 1-column on mobile
+// =============================================================================
+
+.analytics-dashboard__charts-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-5;
+  margin-bottom: $spacing-6;
+
+  @include desktop {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.analytics-dashboard__chart-cell {
+  // Default: 1 column
+}
+
+.analytics-dashboard__chart-cell--wide {
+  // Span full width on desktop
+  @include desktop {
+    grid-column: 1 / -1;
+  }
+}
+
+// =============================================================================
+// Insights + sharing row
+// =============================================================================
+
+.analytics-dashboard__insights-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-5;
+  margin-bottom: $spacing-6;
+
+  @include desktop {
+    grid-template-columns: repeat(2, 1fr);
+    align-items: start;
+  }
+}
+
+// =============================================================================
+// Empty state
+// =============================================================================
+
+.analytics-dashboard__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-3;
+  padding: $spacing-16 $spacing-6;
+  text-align: center;
+}
+
+.analytics-dashboard__empty-icon {
+  color: var(--color-text-secondary);
+  opacity: 0.4;
+}
+
+.analytics-dashboard__empty-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.analytics-dashboard__empty-subtitle {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  max-width: 400px;
+}
+
+// =============================================================================
+// Screen-reader only
+// =============================================================================
+
+.sr-only {
+  @include visually-hidden;
+}

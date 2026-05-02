@@ -1,0 +1,101 @@
+<section class="member-list" aria-label="Module members">
+  <h2 class="member-list__title">Members</h2>
+
+  @if (members.length === 0) {
+    <p class="member-list__empty" role="status">No members yet. Invite someone to collaborate.</p>
+  } @else {
+    <ul class="member-list__items" aria-label="Member list">
+      @for (member of members; track member.userId) {
+        <li class="member-list__item">
+          <!-- Avatar / initials -->
+          <div
+            class="member-list__avatar"
+            aria-hidden="true"
+          >
+            {{ member.userDisplayName.charAt(0).toUpperCase() }}
+          </div>
+
+          <!-- Name + email -->
+          <div class="member-list__info">
+            <span class="member-list__name">
+              {{ member.userDisplayName }}
+              @if (isOwner(member)) {
+                <span class="member-list__owner-badge" aria-label="Module owner">Owner</span>
+              }
+            </span>
+            <span class="member-list__email">{{ member.userEmail }}</span>
+          </div>
+
+          <!-- Permission selector (disabled for owner; read-only for non-managers) -->
+          <div class="member-list__permission">
+            @if (isOwner(member)) {
+              <span
+                class="member-list__permission-label"
+                aria-label="Permission level: Admin (owner)"
+              >
+                Admin
+              </span>
+            } @else if (canManage) {
+              <label
+                class="sr-only"
+                [for]="'permission-' + member.userId"
+              >
+                Permission level for {{ member.userDisplayName }}
+              </label>
+              <select
+                [id]="'permission-' + member.userId"
+                class="member-list__permission-select"
+                [value]="member.permissionLevel"
+                (change)="onPermissionChange(member, $any($event.target).value)"
+                [attr.aria-label]="'Change permission for ' + member.userDisplayName"
+              >
+                @for (level of permissionLevels; track level) {
+                  <option [value]="level" [selected]="member.permissionLevel === level">
+                    {{ permissionLabel(level) }}
+                  </option>
+                }
+              </select>
+            } @else {
+              <span
+                class="member-list__permission-label"
+                [attr.aria-label]="'Permission level: ' + permissionLabel(member.permissionLevel)"
+              >
+                {{ permissionLabel(member.permissionLevel) }}
+              </span>
+            }
+          </div>
+
+          <!-- Remove button (only for managers) -->
+          @if (canManage && canRemove(member)) {
+            <button
+              type="button"
+              class="member-list__remove-btn"
+              (click)="onRemove(member)"
+              [attr.aria-label]="'Remove ' + member.userDisplayName + ' from module'"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                width="16"
+                height="16"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          } @else {
+            <!-- Spacer to keep layout consistent -->
+            <div class="member-list__remove-spacer" aria-hidden="true"></div>
+          }
+        </li>
+      }
+    </ul>
+  }
+</section>

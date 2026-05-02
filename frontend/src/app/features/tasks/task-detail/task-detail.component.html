@@ -1,0 +1,289 @@
+@if (isLoading()) {
+  <div class="task-detail__loading" aria-live="polite" aria-busy="true">
+    <app-loading-spinner label="Loading task…" />
+  </div>
+} @else if (notFound()) {
+  <div class="task-detail__not-found" role="alert">
+    <h2 class="task-detail__not-found-title">Task not found</h2>
+    <p class="task-detail__not-found-text">
+      The task you are looking for does not exist or has been removed.
+    </p>
+    <a class="task-detail__back" routerLink="/tasks">← Back to tasks</a>
+  </div>
+} @else if (task()) {
+  @if (isEditing()) {
+    <!-- Edit mode -->
+    <app-task-form
+      [task]="task()"
+      [modules]="modules()"
+      (saved)="onSaved($event)"
+      (cancelled)="onEditCancelled()"
+    />
+  } @else {
+    <!-- Detail view -->
+    <div class="task-detail">
+
+      <!-- Back link -->
+      <a class="task-detail__back" routerLink="/tasks" aria-label="Back to tasks list">
+        ← Back to tasks
+      </a>
+
+      <!-- Header -->
+      <div class="task-detail__header">
+        <div class="task-detail__header-left">
+          <h1
+            class="task-detail__title"
+            [class.task-detail__title--completed]="task()!.status === 'COMPLETED'"
+            [class.task-detail__title--cancelled]="task()!.status === 'CANCELLED'"
+          >
+            {{ task()!.title }}
+          </h1>
+          <div class="task-detail__badges" aria-label="Status and priority">
+            <app-badge [variant]="task()!.status" />
+            <app-badge [variant]="task()!.priority" />
+          </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="task-detail__actions" role="group" aria-label="Task actions">
+          @if (task()!.status !== 'CANCELLED' && !task()!.completedByMe) {
+            <button
+              type="button"
+              class="btn btn-success"
+              (click)="onComplete()"
+              [disabled]="isActionLoading()"
+              aria-label="Mark task as completed"
+            >
+              Complete
+            </button>
+          }
+          @if (task()!.completedByMe) {
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="onComplete()"
+              [disabled]="isActionLoading()"
+              aria-label="Revert task to pending"
+            >
+              Revert
+            </button>
+          }
+          @if (task()!.status !== 'CANCELLED') {
+            <button
+              type="button"
+              class="btn btn-warning"
+              (click)="onCancelClick()"
+              [disabled]="isActionLoading()"
+              aria-label="Cancel this task"
+            >
+              Cancel
+            </button>
+          }
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="onEdit()"
+            [disabled]="isActionLoading()"
+            aria-label="Edit this task"
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="onDeleteClick()"
+            [disabled]="isActionLoading()"
+            aria-label="Delete this task"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+
+      <!-- Meta section -->
+      <dl class="task-detail__meta" aria-label="Task details">
+        <div class="task-detail__meta-item">
+          <dt class="task-detail__meta-label">Module</dt>
+          <dd class="task-detail__meta-value">
+            <a
+              [routerLink]="['/modules', task()!.moduleId]"
+              class="task-detail__link"
+              [attr.aria-label]="'View module: ' + task()!.moduleName"
+            >
+              {{ task()!.moduleName }}
+            </a>
+          </dd>
+        </div>
+
+        @if (task()!.dueDate) {
+          <div class="task-detail__meta-item">
+            <dt class="task-detail__meta-label">Due date</dt>
+            <dd
+              class="task-detail__meta-value"
+              [class.task-detail__meta-value--overdue]="isOverdue()"
+              [attr.aria-label]="isOverdue() ? 'Due date (overdue): ' + (task()!.dueDate | date:'medium') : 'Due date: ' + (task()!.dueDate | date:'medium')"
+            >
+              {{ task()!.dueDate | date:'medium' }}
+              @if (isOverdue()) {
+                <span class="task-detail__overdue-badge" aria-label="Overdue">Overdue</span>
+              }
+            </dd>
+          </div>
+        }
+
+        <div class="task-detail__meta-item">
+          <dt class="task-detail__meta-label">Created</dt>
+          <dd class="task-detail__meta-value">
+            {{ task()!.createdAt | date:'medium' }}
+            @if (task()!.createdByDisplayName) {
+              <span class="task-detail__meta-by">by <strong>{{ task()!.createdByDisplayName }}</strong></span>
+            }
+          </dd>
+        </div>
+
+        <div class="task-detail__meta-item">
+          <dt class="task-detail__meta-label">Updated</dt>
+          <dd class="task-detail__meta-value">
+            {{ task()!.updatedAt | date:'medium' }}
+            @if (task()!.lastEditedByDisplayName) {
+              <span class="task-detail__meta-by">by <strong>{{ task()!.lastEditedByDisplayName }}</strong></span>
+            }
+          </dd>
+        </div>
+
+        @if (task()!.completedByMe && task()!.completedByMeAt) {
+          <div class="task-detail__meta-item">
+            <dt class="task-detail__meta-label">Completed by you</dt>
+            <dd class="task-detail__meta-value">
+              {{ task()!.completedByMeAt | date:'medium' }}
+            </dd>
+          </div>
+        }
+
+        @if (task()!.status === 'CANCELLED' && task()!.cancelledAt) {
+          <div class="task-detail__meta-item">
+            <dt class="task-detail__meta-label">Cancelled at</dt>
+            <dd class="task-detail__meta-value">
+              {{ task()!.cancelledAt | date:'medium' }}
+            </dd>
+          </div>
+        }
+      </dl>
+
+      <!-- Description -->
+      @if (task()!.description) {
+        <section class="task-detail__section" aria-labelledby="task-description-heading">
+          <h2 class="task-detail__section-title" id="task-description-heading">Description</h2>
+          <p class="task-detail__description">{{ task()!.description }}</p>
+        </section>
+      }
+
+      <!-- Reminders -->
+      @if (enabledReminders.length > 0) {
+        <section class="task-detail__section" aria-labelledby="task-reminders-heading">
+          <h2 class="task-detail__section-title" id="task-reminders-heading">Reminders</h2>
+          <ul class="task-detail__reminders" aria-label="Enabled reminders">
+            @for (reminder of enabledReminders; track reminder) {
+              <li class="task-detail__reminder-item">{{ reminder }} before due date</li>
+            }
+          </ul>
+        </section>
+      }
+
+      <!-- Tags -->
+      @if (task()!.tags.length > 0) {
+        <section class="task-detail__section" aria-labelledby="task-tags-heading">
+          <h2 class="task-detail__section-title" id="task-tags-heading">Tags</h2>
+          <ul class="task-detail__tags" aria-label="Task tags">
+            @for (tag of task()!.tags; track tag) {
+              <li class="task-detail__tag">{{ tag }}</li>
+            }
+          </ul>
+        </section>
+      }
+
+      <!-- Cancellation reason -->
+      @if (task()!.status === 'CANCELLED' && task()!.cancellationReason) {
+        <section class="task-detail__section" aria-labelledby="task-cancel-reason-heading">
+          <h2 class="task-detail__section-title" id="task-cancel-reason-heading">Cancellation reason</h2>
+          <p class="task-detail__cancel-reason">{{ task()!.cancellationReason }}</p>
+        </section>
+      }
+
+    </div>
+  }
+} @else {
+  <!-- Fallback not found state -->
+  <div class="task-detail__not-found" role="alert">
+    <h2 class="task-detail__not-found-title">Task not found</h2>
+    <a class="task-detail__back" routerLink="/tasks">← Back to tasks</a>
+  </div>
+}
+
+<!-- Cancel modal -->
+<app-modal
+  [isOpen]="showCancelModal()"
+  title="Cancel task"
+  (closed)="onCancelModalClose()"
+>
+  <p>Are you sure you want to cancel this task?</p>
+  <div class="task-detail__modal-field">
+    <label class="task-detail__modal-label" for="cancel-reason">
+      Reason (optional)
+    </label>
+    <textarea
+      id="cancel-reason"
+      class="task-detail__modal-textarea"
+      rows="3"
+      maxlength="500"
+      [value]="cancelReason()"
+      (input)="onCancelReasonChange($event)"
+      placeholder="Enter a reason for cancellation…"
+      aria-describedby="cancel-reason-hint"
+    ></textarea>
+    <p id="cancel-reason-hint" class="task-detail__modal-hint">
+      Maximum 500 characters.
+    </p>
+  </div>
+  <ng-container modal-footer>
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="onCancelModalClose()"
+    >
+      Keep task
+    </button>
+    <button
+      type="button"
+      class="btn btn-warning"
+      (click)="onCancelConfirm()"
+    >
+      Cancel task
+    </button>
+  </ng-container>
+</app-modal>
+
+<!-- Delete modal -->
+<app-modal
+  [isOpen]="showDeleteModal()"
+  title="Delete task"
+  (closed)="onDeleteModalClose()"
+>
+  <p>Are you sure you want to delete this task? This action cannot be undone.</p>
+  <ng-container modal-footer>
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="onDeleteModalClose()"
+    >
+      Keep task
+    </button>
+    <button
+      type="button"
+      class="btn btn-danger"
+      (click)="onDeleteConfirm()"
+    >
+      Delete task
+    </button>
+  </ng-container>
+</app-modal>

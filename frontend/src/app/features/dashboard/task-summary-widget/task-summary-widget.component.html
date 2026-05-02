@@ -1,0 +1,122 @@
+<section class="summary-widget" aria-label="Task summary">
+
+  <!-- Total tasks — links to all tasks -->
+  <a
+    routerLink="/tasks"
+    class="stat-card stat-card--total"
+    aria-label="{{ summary.total }} total tasks — view all tasks"
+  >
+    <div class="stat-icon" aria-hidden="true">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        width="22"
+        height="22"
+        focusable="false"
+      >
+        <path d="M9 11l3 3L22 4" />
+        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+      </svg>
+    </div>
+    <div class="stat-body">
+      <span class="stat-value">{{ summary.total }}</span>
+      <span class="stat-label">Total tasks</span>
+    </div>
+  </a>
+
+  <!-- Pending tasks — links to task list filtered by PENDING -->
+  <a
+    routerLink="/tasks"
+    [queryParams]="{ status: 'PENDING' }"
+    class="stat-card stat-card--pending"
+    aria-label="{{ summary.pending }} pending tasks — view pending tasks"
+  >
+    <div class="stat-icon" aria-hidden="true">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        width="22"
+        height="22"
+        focusable="false"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+      </svg>
+    </div>
+    <div class="stat-body">
+      <span class="stat-value">{{ summary.pending }}</span>
+      <span class="stat-label">Pending</span>
+    </div>
+  </a>
+
+  <!-- Completed tasks — links to task list filtered by COMPLETED -->
+  <a
+    routerLink="/tasks"
+    [queryParams]="{ status: 'COMPLETED' }"
+    class="stat-card stat-card--completed"
+    aria-label="{{ summary.completed }} completed tasks — view completed tasks"
+  >
+    <div class="stat-icon" aria-hidden="true">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        width="22"
+        height="22"
+        focusable="false"
+      >
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+        <polyline points="22 4 12 14.01 9 11.01" />
+      </svg>
+    </div>
+    <div class="stat-body">
+      <span class="stat-value">{{ summary.completed }}</span>
+      <span class="stat-label">Completed</span>
+    </div>
+  </a>
+
+  <!-- Completion rate — links to analytics -->
+  <a
+    routerLink="/analytics"
+    class="stat-card stat-card--rate"
+    aria-label="Completion rate {{ completionRate }} — view analytics"
+  >
+    <div class="stat-icon" aria-hidden="true">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        width="22"
+        height="22"
+        focusable="false"
+      >
+        <line x1="18" y1="20" x2="18" y2="10" />
+        <line x1="12" y1="20" x2="12" y2="4" />
+        <line x1="6" y1="20" x2="6" y2="14" />
+      </svg>
+    </div>
+    <div class="stat-body">
+      <span class="stat-value">{{ completionRate }}</span>
+      <span class="stat-label">Completion rate</span>
+    </div>
+  </a>
+
+</section>

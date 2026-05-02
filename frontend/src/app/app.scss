@@ -1,0 +1,32 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+// ── App shell layout ───────────────────────────────────────────────────────────
+
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.app-layout {
+  display: flex;
+  // Subtract the 60px header height
+  height: calc(100vh - 60px);
+  overflow: hidden;
+}
+
+.app-main {
+  flex: 1;
+  overflow-y: auto;
+  background-color: var(--color-background);
+  padding: $spacing-6 $spacing-4;
+
+  @include tablet {
+    padding: $spacing-6;
+  }
+
+  // Remove default outline on programmatic focus (skip-link target)
+  &:focus {
+    outline: none;
+  }
+}

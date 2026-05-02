@@ -1,0 +1,102 @@
+<section class="invitations-page" aria-labelledby="invitations-heading">
+  <header class="invitations-page__header">
+    <h1 id="invitations-heading" class="invitations-page__title">Pending Invitations</h1>
+    <p class="invitations-page__subtitle">
+      Accept an invitation to gain access to a shared module.
+    </p>
+  </header>
+
+  @if (isLoading()) {
+    <app-loading-spinner aria-label="Loading invitations…" />
+  } @else if (invitations().length === 0) {
+    <div class="invitations-page__empty" role="status">
+      <svg
+        class="invitations-page__empty-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        width="48"
+        height="48"
+        aria-hidden="true"
+      >
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+      <p>No pending invitations</p>
+      <a routerLink="/modules" class="btn btn--secondary">Browse your modules</a>
+    </div>
+  } @else {
+    <ul class="invitations-list" role="list" aria-label="Pending invitations">
+      @for (invitation of invitations(); track trackById($index, invitation)) {
+        <li class="invitation-card" role="listitem">
+          <div class="invitation-card__info">
+            <div class="invitation-card__module">
+              <svg
+                class="invitation-card__icon"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                width="20"
+                height="20"
+                aria-hidden="true"
+              >
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+              </svg>
+              <span class="invitation-card__module-name">{{ invitation.moduleName }}</span>
+            </div>
+
+            <p class="invitation-card__from">
+              Invited by <strong>{{ invitation.inviterDisplayName }}</strong>
+            </p>
+
+            <span
+              class="invitation-card__permission"
+              [class.invitation-card__permission--view]="invitation.permissionLevel === 'VIEW'"
+              [class.invitation-card__permission--edit]="invitation.permissionLevel === 'EDIT'"
+              [class.invitation-card__permission--admin]="invitation.permissionLevel === 'ADMIN'"
+            >
+              {{ permissionLabel(invitation.permissionLevel) }}
+            </span>
+          </div>
+
+          <div class="invitation-card__actions">
+            <button
+              type="button"
+              class="btn btn--primary"
+              [disabled]="isProcessing(invitation.id)"
+              [attr.aria-label]="'Accept invitation to ' + invitation.moduleName"
+              (click)="accept(invitation)"
+            >
+              @if (isProcessing(invitation.id)) {
+                <span aria-hidden="true">…</span>
+                <span class="sr-only">Processing…</span>
+              } @else {
+                Accept
+              }
+            </button>
+
+            <button
+              type="button"
+              class="btn btn--ghost"
+              [disabled]="isProcessing(invitation.id)"
+              [attr.aria-label]="'Decline invitation to ' + invitation.moduleName"
+              (click)="reject(invitation)"
+            >
+              Decline
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>

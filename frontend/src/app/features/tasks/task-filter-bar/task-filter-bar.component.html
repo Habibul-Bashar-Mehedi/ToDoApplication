@@ -1,0 +1,116 @@
+<div class="filter-bar" role="search" aria-label="Filter tasks">
+  <div class="filter-bar__controls">
+
+    <!-- Module filter -->
+    <div class="filter-bar__field">
+      <label class="filter-bar__label" for="filter-module">Module</label>
+      <select
+        id="filter-module"
+        class="filter-bar__select"
+        [(ngModel)]="selectedModuleId"
+        (ngModelChange)="onModuleChange()"
+        aria-label="Filter by module"
+      >
+        <option value="">All modules</option>
+        @for (module of modules; track module.id) {
+          <option [value]="module.id">{{ module.name }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Status filter -->
+    <div class="filter-bar__field">
+      <label class="filter-bar__label" for="filter-status">Status</label>
+      <select
+        id="filter-status"
+        class="filter-bar__select"
+        [(ngModel)]="selectedStatus"
+        (ngModelChange)="onStatusChange()"
+        aria-label="Filter by status"
+      >
+        <option value="">All statuses</option>
+        @for (status of statuses; track status) {
+          <option [value]="status">{{ status | titlecase }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Priority filter -->
+    <div class="filter-bar__field">
+      <label class="filter-bar__label" for="filter-priority">Priority</label>
+      <select
+        id="filter-priority"
+        class="filter-bar__select"
+        [(ngModel)]="selectedPriority"
+        (ngModelChange)="onPriorityChange()"
+        aria-label="Filter by priority"
+      >
+        <option value="">All priorities</option>
+        @for (priority of priorities; track priority) {
+          <option [value]="priority">{{ priority | titlecase }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Tag filter -->
+    <div class="filter-bar__field filter-bar__field--grow">
+      <label class="filter-bar__label" for="filter-tag">Tag</label>
+      <input
+        id="filter-tag"
+        type="text"
+        class="filter-bar__input"
+        [(ngModel)]="tagInput"
+        (ngModelChange)="onTagInput()"
+        placeholder="Filter by tag…"
+        aria-label="Filter by tag"
+        autocomplete="off"
+      />
+    </div>
+
+    <!-- Clear filters button -->
+    @if (hasActiveFilters) {
+      <div class="filter-bar__field filter-bar__field--action">
+        <button
+          type="button"
+          class="btn btn-ghost btn-sm"
+          (click)="clearFilters()"
+          aria-label="Clear all filters"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            width="14"
+            height="14"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+          <span>Clear</span>
+        </button>
+      </div>
+    }
+  </div>
+
+  <!-- Show/hide cancelled toggle -->
+  <div class="filter-bar__toggle">
+    <label class="toggle-label" for="show-cancelled-toggle">
+      <input
+        id="show-cancelled-toggle"
+        type="checkbox"
+        class="toggle-checkbox"
+        [checked]="showCancelled"
+        (change)="onShowCancelledChange()"
+        aria-label="Show cancelled tasks"
+      />
+      <span class="toggle-track" aria-hidden="true"></span>
+      <span class="toggle-text">Show cancelled tasks</span>
+    </label>
+  </div>
+</div>

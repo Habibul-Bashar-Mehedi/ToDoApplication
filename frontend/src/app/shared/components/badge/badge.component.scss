@@ -1,0 +1,55 @@
+@use '../../../../styles/variables' as *;
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px $spacing-2;
+  border-radius: $radius-full;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+
+  // ── Status variants ──────────────────────────────────────────────────────────
+
+  &--pending {
+    background-color: color-mix(in srgb, var(--color-warning) 15%, transparent);
+    color: #92400e; // Amber 800 — sufficient contrast on amber-tinted bg
+  }
+
+  &--completed {
+    background-color: color-mix(in srgb, var(--color-success) 15%, transparent);
+    color: #14532d; // Green 900
+  }
+
+  &--cancelled {
+    background-color: color-mix(in srgb, var(--color-text-secondary) 15%, transparent);
+    color: #374151; // Gray 700
+  }
+
+  // ── Priority variants ────────────────────────────────────────────────────────
+
+  &--high {
+    background-color: color-mix(in srgb, var(--color-danger) 15%, transparent);
+    color: #991b1b; // Red 800
+  }
+
+  &--medium {
+    background-color: color-mix(in srgb, var(--color-warning) 15%, transparent);
+    color: #92400e; // Amber 800
+  }
+
+  &--low {
+    background-color: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    color: #3730a3; // Indigo 800
+  }
+}
+
+.badge-icon {
+  flex-shrink: 0;
+}
+
+.badge-label {
+  // Visible text label — never rely on color alone
+}

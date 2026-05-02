@@ -1,0 +1,89 @@
+<!-- Req 8.7: links to relevant task; Req 8.8: marks read on click -->
+<div
+  class="notification-item"
+  [class.notification-item--unread]="!notification.isRead"
+  [class.notification-item--overdue]="notification.type === 'OVERDUE'"
+  [attr.aria-label]="typeLabel + ': ' + notification.message + (notification.isRead ? '' : ' (unread)')"
+  role="listitem"
+>
+  <!-- Unread indicator dot (color + aria-label, not color alone) -->
+  @if (!notification.isRead) {
+    <span
+      class="notification-item__dot"
+      aria-label="Unread"
+      role="img"
+    ></span>
+  } @else {
+    <span class="notification-item__dot notification-item__dot--read" aria-hidden="true"></span>
+  }
+
+  <!-- Type icon -->
+  <span class="notification-item__icon" aria-hidden="true">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      width="18"
+      height="18"
+    >
+      <path [attr.d]="iconPath" />
+    </svg>
+  </span>
+
+  <!-- Content -->
+  <div class="notification-item__content">
+    <div class="notification-item__header">
+      <span class="notification-item__type">{{ typeLabel }}</span>
+      <time
+        class="notification-item__time"
+        [attr.datetime]="notification.createdAt"
+        [attr.title]="notification.createdAt | date:'medium'"
+      >
+        {{ notification.createdAt | date:'MMM d, h:mm a' }}
+      </time>
+    </div>
+
+    <!-- Message — clickable to mark read -->
+    @if (notification.taskId) {
+      <a
+        class="notification-item__message notification-item__message--link"
+        [routerLink]="['/tasks', notification.taskId]"
+        (click)="onClick()"
+        [attr.aria-label]="notification.message + ' — view task'"
+      >
+        {{ notification.message }}
+        <svg
+          class="notification-item__link-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          width="12"
+          height="12"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+          <polyline points="15 3 21 3 21 9" />
+          <line x1="10" y1="14" x2="21" y2="3" />
+        </svg>
+      </a>
+    } @else {
+      <button
+        type="button"
+        class="notification-item__message notification-item__message--button"
+        (click)="onClick()"
+        [attr.aria-label]="notification.message + (notification.isRead ? '' : ' — click to mark as read')"
+      >
+        {{ notification.message }}
+      </button>
+    }
+  </div>
+</div>

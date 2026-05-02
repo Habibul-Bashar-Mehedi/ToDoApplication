@@ -1,0 +1,78 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 64px;
+  min-height: 100%;
+  background-color: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  padding: $spacing-4 0;
+  transition: width 0.2s ease;
+
+  @include tablet {
+    width: 220px;
+  }
+}
+
+.nav-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+  padding: 0 $spacing-2;
+}
+
+.nav-item {
+  width: 100%;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  padding: $spacing-2 $spacing-3;
+  border-radius: $radius-md;
+  text-decoration: none;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  min-height: 44px; // WCAG minimum touch target
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    color: var(--color-primary);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  &--active {
+    background-color: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    color: var(--color-primary);
+    font-weight: 600;
+
+    .nav-icon {
+      stroke: var(--color-primary);
+    }
+  }
+}
+
+.nav-icon {
+  flex-shrink: 0;
+  stroke: currentColor;
+}
+
+.nav-label {
+  // Hidden on mobile (icon-only), visible on tablet+
+  display: none;
+
+  @include tablet {
+    display: block;
+  }
+}

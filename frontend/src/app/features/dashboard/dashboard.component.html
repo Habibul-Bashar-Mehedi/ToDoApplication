@@ -1,0 +1,327 @@
+<div class="dashboard">
+
+  <!-- Page header -->
+  <header class="dashboard-header">
+    <div class="header-text">
+      <h1 class="page-title">
+        @if (authService.currentUser(); as user) {
+          Good to see you, {{ user.displayName }}
+        } @else {
+          Dashboard
+        }
+      </h1>
+      <p class="page-subtitle">Here's what's on your plate today.</p>
+    </div>
+
+    <!-- Quick-action shortcuts — part of the ≤3-click primary workflow -->
+    <div class="header-actions">
+      <!-- Click 3 of the primary workflow: navigate to modules to share -->
+      <a
+        routerLink="/modules"
+        class="btn btn-ghost"
+        aria-label="Go to modules"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          width="16"
+          height="16"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+        </svg>
+        <span>Modules</span>
+      </a>
+
+      <a
+        routerLink="/tasks"
+        class="btn btn-primary"
+        aria-label="View all tasks"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          width="16"
+          height="16"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <line x1="8" y1="6" x2="21" y2="6" />
+          <line x1="8" y1="12" x2="21" y2="12" />
+          <line x1="8" y1="18" x2="21" y2="18" />
+          <line x1="3" y1="6" x2="3.01" y2="6" />
+          <line x1="3" y1="12" x2="3.01" y2="12" />
+          <line x1="3" y1="18" x2="3.01" y2="18" />
+        </svg>
+        <span>All tasks</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Summary widget -->
+  <section class="dashboard-section" aria-labelledby="summary-heading">
+    <h2 id="summary-heading" class="section-title visually-hidden">
+      Task summary
+    </h2>
+
+    @if (isLoadingTasks()) {
+      <div class="loading-placeholder" aria-busy="true" aria-label="Loading task summary">
+        <app-loading-spinner label="Loading summary…" />
+      </div>
+    } @else {
+      <app-task-summary-widget [summary]="summary()" />
+    }
+  </section>
+
+  <!-- Main content grid: quick-add + upcoming tasks -->
+  <div class="dashboard-grid">
+
+    <!-- Quick add task — click 1 of the primary workflow -->
+    <section class="dashboard-section" aria-labelledby="quick-add-heading">
+      <h2 id="quick-add-heading" class="section-title">Add a task</h2>
+
+      @if (isLoadingModules()) {
+        <div class="loading-placeholder" aria-busy="true" aria-label="Loading modules">
+          <app-loading-spinner label="Loading modules…" />
+        </div>
+      } @else if (writableModules().length === 0) {
+        <div class="empty-state">
+          <p class="empty-state__message">
+            You don't have any modules yet.
+            <a routerLink="/modules" class="link">Create a module</a>
+            first to start adding tasks.
+          </p>
+        </div>
+      } @else {
+        <app-quick-add-task
+          [modules]="writableModules()"
+          (taskCreated)="onTaskCreated($event)"
+        />
+      }
+    </section>
+
+    <!-- Upcoming tasks -->
+    <section class="dashboard-section" aria-labelledby="upcoming-heading">
+      <div class="section-header">
+        <h2 id="upcoming-heading" class="section-title">Upcoming tasks</h2>
+        <a routerLink="/tasks" class="section-link" aria-label="View all tasks">
+          View all
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            width="14"
+            height="14"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </a>
+      </div>
+
+      @if (isLoadingTasks()) {
+        <div class="loading-placeholder" aria-busy="true" aria-label="Loading tasks">
+          <app-loading-spinner label="Loading tasks…" />
+        </div>
+      } @else if (upcomingTasks().length === 0) {
+        <div class="empty-state">
+          <svg
+            class="empty-state__icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            width="40"
+            height="40"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path d="M9 11l3 3L22 4" />
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+          </svg>
+          <p class="empty-state__message">No pending tasks — you're all caught up!</p>
+        </div>
+      } @else {
+        <ul class="task-list" role="list" aria-label="Upcoming pending tasks">
+          @for (task of upcomingTasks(); track task.id) {
+            <li class="task-item">
+              <a
+                [routerLink]="['/tasks', task.id]"
+                class="task-link"
+                [attr.aria-label]="task.title + ', ' + task.priority + ' priority'"
+              >
+                <!-- Priority indicator dot (color + shape, never color alone) -->
+                <span
+                  class="priority-dot priority-dot--{{ task.priority | lowercase }}"
+                  aria-hidden="true"
+                ></span>
+
+                <span class="task-title">{{ task.title }}</span>
+
+                <span class="task-meta">
+                  <span class="task-module">{{ task.moduleName }}</span>
+                  @if (task.dueDate) {
+                    <span class="task-due" aria-label="Due {{ task.dueDate | date:'mediumDate' }}">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        width="12"
+                        height="12"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                      </svg>
+                      {{ task.dueDate | date:'MMM d' }}
+                    </span>
+                  }
+                </span>
+              </a>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+
+  </div>
+
+  <!-- Module shortcuts — click 3 of the primary workflow (share a module) -->
+  @if (!isLoadingModules() && modules().length > 0) {
+    <section class="dashboard-section" aria-labelledby="modules-heading">
+      <div class="section-header">
+        <h2 id="modules-heading" class="section-title">Your modules</h2>
+        <a routerLink="/modules" class="section-link" aria-label="View all modules">
+          View all
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            width="14"
+            height="14"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </a>
+      </div>
+
+      <ul class="module-list" role="list" aria-label="Your modules">
+        @for (module of modules().slice(0, 4); track module.id) {
+          <li class="module-card">
+            <a
+              [routerLink]="['/modules', module.id]"
+              class="module-card__link"
+              [attr.aria-label]="module.name + ' module'"
+            >
+              <span class="module-card__name">{{ module.name }}</span>
+              <span
+                class="module-card__visibility"
+                [class.module-card__visibility--shared]="module.visibility === 'SHARED'"
+              >
+                @if (module.visibility === 'SHARED') {
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    width="12"
+                    height="12"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                  Shared
+                } @else {
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    width="12"
+                    height="12"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                  Private
+                }
+              </span>
+            </a>
+            <!-- Click 3 of the primary workflow: share this module -->
+            <a
+              [routerLink]="['/modules', module.id, 'share']"
+              class="module-card__share-btn"
+              aria-label="Share {{ module.name }} module"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                width="15"
+                height="15"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <circle cx="18" cy="5" r="3" />
+                <circle cx="6" cy="12" r="3" />
+                <circle cx="18" cy="19" r="3" />
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+              </svg>
+              Share
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+</div>

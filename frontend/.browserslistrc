@@ -1,0 +1,8 @@
+# Browser targets for Requirement 13.3
+# The UI shall be fully functional on the latest two major versions of
+# Chrome, Firefox, Safari, and Edge on desktop and tablet screen sizes.
+
+last 2 Chrome versions
+last 2 Firefox versions
+last 2 Safari versions
+last 2 Edge versions

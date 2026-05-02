@@ -1,0 +1,217 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: $z-dropdown;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  padding: 0 $spacing-4;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: $shadow-sm;
+
+  @include tablet {
+    padding: 0 $spacing-6;
+  }
+}
+
+// ── App title ──────────────────────────────────────────────────────────────────
+
+.app-title {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  text-decoration: none;
+  color: var(--color-text-primary);
+  font-weight: 700;
+  font-size: 1.125rem;
+
+  &:focus-visible {
+    @include focus-ring;
+    border-radius: $radius-sm;
+  }
+}
+
+.app-logo {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.app-title-text {
+  @include truncate;
+}
+
+// ── Right-side actions ─────────────────────────────────────────────────────────
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+}
+
+// ── Notification bell ──────────────────────────────────────────────────────────
+
+.notification-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-full;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.notification-badge-live {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  // The live region itself is invisible; only the badge inside it is visible
+  pointer-events: none;
+}
+
+.notification-badge {
+  display: block;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  background-color: var(--color-danger);
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  border-radius: $radius-full;
+  border: 2px solid var(--color-surface);
+}
+
+// ── User menu ──────────────────────────────────────────────────────────────────
+
+.user-menu-wrapper {
+  position: relative;
+}
+
+.user-menu-trigger {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  height: 40px;
+  padding: 0 $spacing-2;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: $radius-md;
+  cursor: pointer;
+  color: var(--color-text-primary);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  max-width: 200px;
+
+  &:hover {
+    background-color: var(--color-background);
+    border-color: var(--color-border);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: $radius-full;
+  background-color: var(--color-primary);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.user-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  max-width: 120px;
+
+  // Hide on small screens
+  display: none;
+
+  @include tablet {
+    display: block;
+  }
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+  transition: transform 0.2s ease;
+
+  &--open {
+    transform: rotate(180deg);
+  }
+}
+
+.user-menu {
+  position: absolute;
+  top: calc(100% + $spacing-1);
+  right: 0;
+  min-width: 180px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  box-shadow: $shadow-md;
+  list-style: none;
+  padding: $spacing-1 0;
+  z-index: $z-dropdown;
+}
+
+.user-menu-item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  width: 100%;
+  padding: $spacing-2 $spacing-3;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  text-align: left;
+  transition: background-color 0.1s ease;
+
+  &:hover {
+    background-color: var(--color-background);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+    outline-offset: -2px;
+  }
+
+  &--danger {
+    color: var(--color-danger);
+  }
+}
+
+.user-menu-divider {
+  height: 1px;
+  background-color: var(--color-border);
+  margin: $spacing-1 0;
+}

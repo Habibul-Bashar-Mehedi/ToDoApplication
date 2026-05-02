@@ -1,0 +1,85 @@
+<form
+  class="invitation-form"
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+  novalidate
+  aria-label="Invite a member to this module"
+>
+  <h2 class="invitation-form__title">Invite a member</h2>
+
+  <!-- Email -->
+  <div class="form-field">
+    <label class="form-label" for="invite-email">
+      Email address <span class="form-label--required" aria-hidden="true">*</span>
+    </label>
+    <input
+      id="invite-email"
+      type="email"
+      class="form-input"
+      [class.form-input--error]="form.get('email')?.invalid && form.get('email')?.touched"
+      formControlName="email"
+      placeholder="colleague@example.com"
+      autocomplete="email"
+      aria-required="true"
+      [attr.aria-describedby]="form.get('email')?.invalid && form.get('email')?.touched ? 'invite-email-error' : 'invite-email-hint'"
+    />
+    <span id="invite-email-hint" class="form-hint">
+      The user must have a verified account.
+    </span>
+    @if (form.get('email')?.invalid && form.get('email')?.touched) {
+      <app-field-error
+        id="invite-email-error"
+        [control]="form.get('email')!"
+        [messages]="{
+          required: 'Email address is required.',
+          email: 'Enter a valid email address.',
+          notFound: 'No verified account found with this email address.',
+          alreadyMember: 'This user is already a member of this module.',
+          alreadyInvited: 'This user already has a pending invitation.'
+        }"
+      />
+    }
+  </div>
+
+  <!-- Permission level -->
+  <div class="form-field">
+    <fieldset class="form-fieldset">
+      <legend class="form-label">
+        Permission level <span class="form-label--required" aria-hidden="true">*</span>
+      </legend>
+      <div class="form-radio-group">
+        @for (option of permissionOptions; track option.value) {
+          <label class="form-radio-label">
+            <input
+              type="radio"
+              class="form-radio"
+              formControlName="permissionLevel"
+              [value]="option.value"
+              [attr.aria-label]="option.label + ': ' + option.description"
+            />
+            <span class="form-radio-text">
+              <strong>{{ option.label }}</strong>
+              <span class="form-radio-hint">{{ option.description }}</span>
+            </span>
+          </label>
+        }
+      </div>
+    </fieldset>
+  </div>
+
+  <!-- Submit -->
+  <div class="invitation-form__footer">
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="form.invalid || isSubmitting()"
+      aria-label="Send invitation"
+    >
+      @if (isSubmitting()) {
+        Sending…
+      } @else {
+        Send invitation
+      }
+    </button>
+  </div>
+</form>

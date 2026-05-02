@@ -1,0 +1,41 @@
+<div class="chart-card">
+  <h3 class="chart-card__title">Completion Trend</h3>
+
+  @if (_data().length === 0) {
+    <div class="chart-card__empty" role="status">No data available for the selected range.</div>
+  } @else {
+    <div
+      class="chart-card__chart"
+      role="img"
+      aria-label="Line chart showing tasks created versus tasks completed over time"
+    >
+      <div
+        echarts
+        [options]="chartOptions()"
+        class="echarts-container"
+        aria-hidden="true"
+      ></div>
+    </div>
+
+    <!-- Visually-hidden data table (Req 13.1) -->
+    <table class="visually-hidden" aria-label="Completion trend data">
+      <caption>Tasks created vs completed over time</caption>
+      <thead>
+        <tr>
+          <th scope="col">Date</th>
+          <th scope="col">Created</th>
+          <th scope="col">Completed</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of _data(); track item.date) {
+          <tr>
+            <td>{{ item.date }}</td>
+            <td>{{ item.created }}</td>
+            <td>{{ item.completed }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

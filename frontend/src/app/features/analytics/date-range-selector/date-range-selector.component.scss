@@ -1,0 +1,161 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.date-range-selector {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+}
+
+// ─── Preset buttons ──────────────────────────────────────────────────────────
+
+.date-range-selector__presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-2;
+}
+
+.preset-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-2 $spacing-4;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: $radius-full;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  min-height: 36px;
+
+  &:hover {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    border-color: var(--color-text-secondary);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  &--active {
+    background-color: var(--color-primary);
+    color: #ffffff;
+    border-color: var(--color-primary);
+
+    &:hover {
+      background-color: var(--color-primary-hover);
+      border-color: var(--color-primary-hover);
+      color: #ffffff;
+    }
+  }
+}
+
+// ─── Custom date range picker ─────────────────────────────────────────────────
+
+.date-range-selector__custom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: $spacing-3;
+  padding: $spacing-4;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+}
+
+.date-range-selector__fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: $spacing-3;
+}
+
+.date-range-selector__separator {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  padding-bottom: $spacing-2;
+  align-self: flex-end;
+}
+
+// ─── Date field ───────────────────────────────────────────────────────────────
+
+.date-field {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+.date-field__label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.date-field__input {
+  padding: $spacing-2 $spacing-3;
+  font-size: 0.9375rem;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  min-height: 40px;
+
+  &:focus-visible {
+    @include focus-ring;
+    outline-offset: 0;
+  }
+
+  &:invalid {
+    border-color: var(--color-danger);
+  }
+}
+
+.date-field__error {
+  font-size: 0.8125rem;
+  color: var(--color-danger);
+}
+
+// ─── Buttons ──────────────────────────────────────────────────────────────────
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-2;
+  padding: $spacing-2 $spacing-4;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border-radius: $radius-md;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+  min-height: 44px;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #ffffff;
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-primary-hover);
+  }
+}
+
+.btn-sm {
+  padding: $spacing-2 $spacing-3;
+  font-size: 0.875rem;
+  min-height: 36px;
+}

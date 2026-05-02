@@ -1,0 +1,35 @@
+<!-- role="status" + aria-label announces the loading state to screen readers -->
+<div
+  class="spinner-wrapper"
+  [class]="'spinner-wrapper--' + size"
+  role="status"
+  [attr.aria-label]="label"
+>
+  <svg
+    class="spinner"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <circle
+      class="spinner-track"
+      cx="12"
+      cy="12"
+      r="10"
+      stroke="currentColor"
+      stroke-width="3"
+    />
+    <path
+      class="spinner-arc"
+      d="M12 2a10 10 0 0 1 10 10"
+      stroke="currentColor"
+      stroke-width="3"
+      stroke-linecap="round"
+    />
+  </svg>
+
+  <!-- Visually hidden text for screen readers that don't read aria-label on SVG wrappers -->
+  <span class="visually-hidden">{{ label }}</span>
+</div>

@@ -1,0 +1,269 @@
+<form
+  class="task-form"
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+  novalidate
+  [attr.aria-label]="formTitle()"
+>
+  <h2 class="task-form__title">{{ formTitle() }}</h2>
+
+  <!-- ── Title ──────────────────────────────────────────────────────────── -->
+  <div class="task-form__field">
+    <label class="task-form__label" for="task-title">
+      Title <span class="task-form__required" aria-hidden="true">*</span>
+    </label>
+    <input
+      id="task-title"
+      type="text"
+      class="task-form__input"
+      formControlName="title"
+      autocomplete="off"
+      aria-describedby="task-title-error"
+      [attr.aria-invalid]="
+        form.get('title')!.invalid && form.get('title')!.touched
+      "
+      placeholder="Enter task title"
+    />
+    <app-field-error
+      id="task-title-error"
+      [control]="form.get('title')"
+      [messages]="{
+        required: 'Title is required',
+        maxlength: 'Title must be 200 characters or fewer'
+      }"
+    />
+  </div>
+
+  <!-- ── Description ────────────────────────────────────────────────────── -->
+  <div class="task-form__field">
+    <label class="task-form__label" for="task-description">Description</label>
+    <textarea
+      id="task-description"
+      class="task-form__textarea"
+      formControlName="description"
+      rows="4"
+      aria-describedby="task-description-error"
+      [attr.aria-invalid]="
+        form.get('description')!.invalid && form.get('description')!.touched
+      "
+      placeholder="Optional description"
+    ></textarea>
+    <app-field-error
+      id="task-description-error"
+      [control]="form.get('description')"
+      [messages]="{
+        maxlength: 'Description must be 2000 characters or fewer'
+      }"
+    />
+  </div>
+
+  <!-- ── Module selector ────────────────────────────────────────────────── -->
+  <div class="task-form__field">
+    <label class="task-form__label" for="task-module">
+      Module <span class="task-form__required" aria-hidden="true">*</span>
+    </label>
+    <select
+      id="task-module"
+      class="task-form__select"
+      formControlName="moduleId"
+      aria-describedby="task-module-error"
+      [attr.aria-invalid]="
+        form.get('moduleId')!.invalid && form.get('moduleId')!.touched
+      "
+    >
+      <option value="" disabled>Select a module</option>
+      @for (module of modules; track module.id) {
+        <option [value]="module.id">{{ module.name }}</option>
+      }
+    </select>
+    <app-field-error
+      id="task-module-error"
+      [control]="form.get('moduleId')"
+      [messages]="{
+        required: 'Module is required'
+      }"
+    />
+  </div>
+
+  <!-- ── Priority selector ──────────────────────────────────────────────── -->
+  <div class="task-form__field">
+    <label class="task-form__label" for="task-priority">Priority</label>
+    <select
+      id="task-priority"
+      class="task-form__select"
+      formControlName="priority"
+      aria-describedby="task-priority-error"
+      [attr.aria-invalid]="
+        form.get('priority')!.invalid && form.get('priority')!.touched
+      "
+    >
+      <option value="HIGH">High</option>
+      <option value="MEDIUM">Medium</option>
+      <option value="LOW">Low</option>
+    </select>
+    <app-field-error
+      id="task-priority-error"
+      [control]="form.get('priority')"
+      [messages]="{
+        required: 'Priority is required'
+      }"
+    />
+  </div>
+
+  <!-- ── Due date ────────────────────────────────────────────────────────── -->
+  <div class="task-form__field">
+    <label class="task-form__label" for="task-due-date">Due date</label>
+    <input
+      id="task-due-date"
+      type="datetime-local"
+      class="task-form__input"
+      formControlName="dueDate"
+      aria-describedby="task-due-date-error"
+      [attr.aria-invalid]="
+        form.get('dueDate')!.invalid && form.get('dueDate')!.touched
+      "
+    />
+    <app-field-error
+      id="task-due-date-error"
+      [control]="form.get('dueDate')"
+      [messages]="{
+        futureDate: 'Due date must be in the future'
+      }"
+    />
+  </div>
+
+  <!-- ── Reminders ──────────────────────────────────────────────────────── -->
+  <fieldset class="task-form__reminders">
+    <legend class="task-form__label">Reminders</legend>
+
+    <div class="task-form__reminder-item">
+      <input
+        id="reminder-15min"
+        type="checkbox"
+        class="task-form__checkbox"
+        formControlName="reminder15min"
+      />
+      <label for="reminder-15min">15 minutes before</label>
+    </div>
+
+    <div class="task-form__reminder-item">
+      <input
+        id="reminder-1hour"
+        type="checkbox"
+        class="task-form__checkbox"
+        formControlName="reminder1hour"
+      />
+      <label for="reminder-1hour">1 hour before</label>
+    </div>
+
+    <div class="task-form__reminder-item">
+      <input
+        id="reminder-1day"
+        type="checkbox"
+        class="task-form__checkbox"
+        formControlName="reminder1day"
+      />
+      <label for="reminder-1day">1 day before</label>
+    </div>
+
+    <div class="task-form__reminder-item">
+      <input
+        id="reminder-2days"
+        type="checkbox"
+        class="task-form__checkbox"
+        formControlName="reminder2days"
+      />
+      <label for="reminder-2days">2 days before</label>
+    </div>
+  </fieldset>
+
+  <!-- ── Tags ───────────────────────────────────────────────────────────── -->
+  <div class="task-form__field task-form__tags">
+    <label class="task-form__label" for="task-tag-input">Tags</label>
+
+    <!-- Tag input row -->
+    <div class="task-form__tag-input-row">
+      <input
+        id="task-tag-input"
+        type="text"
+        class="task-form__input task-form__input--tag"
+        [value]="tagInput()"
+        (input)="onTagInputChange($event)"
+        (keydown)="onTagInputKeydown($event)"
+        placeholder="Add a tag and press Enter"
+        autocomplete="off"
+        aria-describedby="task-tag-hint"
+      />
+      <button
+        type="button"
+        class="task-form__tag-add-btn"
+        (click)="addTag()"
+        aria-label="Add tag"
+      >
+        Add
+      </button>
+    </div>
+    <p id="task-tag-hint" class="task-form__hint">
+      Press Enter or click Add to add a tag.
+    </p>
+
+    <!-- Tag chip list -->
+    @if (tags().length > 0) {
+      <ul class="task-form__tag-list" aria-label="Tags">
+        @for (tag of tags(); track tag) {
+          <li class="task-form__tag-chip">
+            <span class="task-form__tag-name">{{ tag }}</span>
+            <button
+              type="button"
+              class="task-form__tag-remove"
+              (click)="removeTag(tag)"
+              [attr.aria-label]="'Remove tag: ' + tag"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                width="12"
+                height="12"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  <!-- ── Form actions ───────────────────────────────────────────────────── -->
+  <div class="task-form__actions">
+    <button
+      type="button"
+      class="task-form__btn task-form__btn--secondary"
+      (click)="onCancel()"
+      [disabled]="isLoading()"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      class="task-form__btn task-form__btn--primary"
+      [disabled]="isLoading()"
+      [attr.aria-busy]="isLoading()"
+    >
+      @if (isLoading()) {
+        <app-loading-spinner size="sm" label="Saving…" />
+        <span>Saving…</span>
+      } @else {
+        <span>{{ submitLabel() }}</span>
+      }
+    </button>
+  </div>
+</form>

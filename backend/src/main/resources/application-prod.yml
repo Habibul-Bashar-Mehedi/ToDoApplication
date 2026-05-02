@@ -1,0 +1,25 @@
+# Production profile overrides
+# Swagger UI and OpenAPI spec are disabled in production to reduce attack surface.
+# See SecurityConfig for the corresponding path restrictions.
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+management:
+  endpoint:
+    health:
+      # In production, only show health details to authenticated admin users
+      show-details: when-authorized
+  endpoints:
+    web:
+      exposure:
+        # Restrict actuator exposure in production
+        include: health,metrics
+
+logging:
+  level:
+    root: WARN
+    com.todoapp: INFO

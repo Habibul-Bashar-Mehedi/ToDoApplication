@@ -1,0 +1,188 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+// ─── Filter Bar ───────────────────────────────────────────────────────────────
+
+.filter-bar {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  padding: $spacing-3;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+
+  @include tablet {
+    padding: $spacing-4;
+  }
+}
+
+// ─── Controls row ─────────────────────────────────────────────────────────────
+
+.filter-bar__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: $spacing-3;
+}
+
+// ─── Individual field ─────────────────────────────────────────────────────────
+
+.filter-bar__field {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+  min-width: 140px;
+
+  &--grow {
+    flex: 1;
+    min-width: 180px;
+  }
+
+  &--action {
+    justify-content: flex-end;
+    min-width: auto;
+  }
+}
+
+.filter-bar__label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.filter-bar__select,
+.filter-bar__input {
+  padding: $spacing-2 $spacing-3;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-sm;
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  height: 36px;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 0;
+    border-color: var(--color-primary);
+  }
+}
+
+.filter-bar__select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right $spacing-2 center;
+  background-size: 16px;
+  padding-right: $spacing-7;
+  cursor: pointer;
+}
+
+// ─── Toggle row ───────────────────────────────────────────────────────────────
+
+.filter-bar__toggle {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-2;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-checkbox {
+  // Visually hidden but accessible
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.toggle-track {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  background: var(--color-border);
+  border-radius: $radius-full;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: $shadow-sm;
+    transition: transform 0.2s ease;
+  }
+}
+
+.toggle-checkbox:checked + .toggle-track {
+  background: var(--color-primary);
+
+  &::after {
+    transform: translateX(16px);
+  }
+}
+
+.toggle-checkbox:focus-visible + .toggle-track {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.toggle-text {
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+}
+
+// ─── Ghost button (used for Clear) ───────────────────────────────────────────
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  border: none;
+  border-radius: $radius-sm;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  min-height: 44px; // WCAG 2.5.5 minimum touch target
+  transition: background-color 0.15s ease;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+
+  &:hover {
+    background: var(--color-background);
+    color: var(--color-text-primary);
+  }
+}
+
+.btn-sm {
+  padding: $spacing-1 $spacing-3;
+  height: 44px; // WCAG 2.5.5 minimum touch target
+}

@@ -1,0 +1,118 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+// ── Backdrop ───────────────────────────────────────────────────────────────────
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgb(0 0 0 / 0.5);
+  z-index: $z-modal;
+  animation: fade-in 0.15s ease;
+}
+
+// ── Container (positions the panel) ───────────────────────────────────────────
+
+.modal-container {
+  position: fixed;
+  inset: 0;
+  z-index: $z-modal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-4;
+  overflow-y: auto;
+}
+
+// ── Panel ──────────────────────────────────────────────────────────────────────
+
+.modal-panel {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  background-color: var(--color-surface);
+  border-radius: $radius-lg;
+  box-shadow: $shadow-lg;
+  animation: slide-up 0.2s ease;
+  max-height: calc(100vh - $spacing-8);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// ── Header ─────────────────────────────────────────────────────────────────────
+
+.modal-header {
+  @include flex-between;
+  padding: $spacing-4 $spacing-5;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.modal-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.modal-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;  // WCAG 2.5.5 minimum touch target
+  height: 44px; // WCAG 2.5.5 minimum touch target
+  background: none;
+  border: none;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  transition: background-color 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+// ── Body ───────────────────────────────────────────────────────────────────────
+
+.modal-body {
+  padding: $spacing-5;
+  overflow-y: auto;
+  flex: 1;
+}
+
+// ── Animations ─────────────────────────────────────────────────────────────────
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-backdrop,
+  .modal-panel {
+    animation: none;
+  }
+}

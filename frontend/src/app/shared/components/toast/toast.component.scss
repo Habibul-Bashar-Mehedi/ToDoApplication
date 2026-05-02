@@ -1,0 +1,127 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+// ── Toast region (fixed overlay) ───────────────────────────────────────────────
+
+.toast-region {
+  position: fixed;
+  bottom: $spacing-6;
+  right: $spacing-4;
+  z-index: $z-toast;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+  max-width: 400px;
+  width: calc(100vw - $spacing-8);
+  pointer-events: none; // let clicks pass through the region itself
+
+  @include tablet {
+    right: $spacing-6;
+    width: 380px;
+  }
+}
+
+// ── Individual toast ───────────────────────────────────────────────────────────
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-3;
+  padding: $spacing-3 $spacing-4;
+  background-color: var(--color-surface);
+  border-radius: $radius-md;
+  box-shadow: $shadow-md;
+  border-left: 4px solid transparent;
+  pointer-events: all; // re-enable pointer events on the toast itself
+  animation: slide-in 0.2s ease;
+
+  // ── Type variants ────────────────────────────────────────────────────────────
+
+  &--success {
+    border-left-color: var(--color-success);
+
+    .toast-icon {
+      color: var(--color-success);
+    }
+  }
+
+  &--error {
+    border-left-color: var(--color-danger);
+
+    .toast-icon {
+      color: var(--color-danger);
+    }
+  }
+
+  &--warning {
+    border-left-color: var(--color-warning);
+
+    .toast-icon {
+      color: var(--color-warning);
+    }
+  }
+
+  &--info {
+    border-left-color: var(--color-primary);
+
+    .toast-icon {
+      color: var(--color-primary);
+    }
+  }
+}
+
+.toast-icon {
+  flex-shrink: 0;
+  margin-top: 1px; // optical alignment with first line of text
+}
+
+.toast-message {
+  flex: 1;
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.toast-dismiss {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;  // WCAG 2.5.5 minimum touch target
+  height: 44px; // WCAG 2.5.5 minimum touch target
+  background: none;
+  border: none;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+  transition: background-color 0.1s ease, color 0.1s ease;
+
+  &:hover {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+// ── Animation ──────────────────────────────────────────────────────────────────
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}

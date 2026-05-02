@@ -1,0 +1,212 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+// =============================================================================
+// Verify Email Page — centered card layout (matches register component)
+// =============================================================================
+
+.verify-email-page {
+  min-height: 100vh;
+  background-color: var(--color-background);
+  @include flex-center;
+  padding: $spacing-6 $spacing-4;
+}
+
+.verify-email-card {
+  width: 100%;
+  max-width: 400px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-lg;
+  box-shadow: $shadow-md;
+  padding: $spacing-8;
+
+  @include tablet {
+    padding: $spacing-10;
+  }
+}
+
+// =============================================================================
+// State containers
+// =============================================================================
+
+.state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: $spacing-4;
+}
+
+.state-loading {
+  padding: $spacing-4 0;
+}
+
+.state-label {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+// =============================================================================
+// State icons
+// =============================================================================
+
+.state-icon {
+  line-height: 0;
+
+  &--success {
+    color: var(--color-success);
+  }
+
+  &--error {
+    color: var(--color-danger);
+  }
+}
+
+// =============================================================================
+// State titles and messages
+// =============================================================================
+
+.state-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+
+  &--error {
+    color: var(--color-danger);
+  }
+}
+
+.state-message {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+// =============================================================================
+// Buttons
+// =============================================================================
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-2;
+  padding: $spacing-2 $spacing-5;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: $radius-md;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  min-height: 44px; // WCAG 2.5.5 minimum touch target
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #ffffff;
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-primary-hover);
+  }
+}
+
+.btn-full {
+  width: 100%;
+  padding-block: $spacing-3;
+}
+
+// =============================================================================
+// Resend section
+// =============================================================================
+
+.resend-section {
+  width: 100%;
+  background-color: color-mix(in srgb, var(--color-border) 40%, transparent);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  padding: $spacing-5;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+  text-align: left;
+}
+
+.resend-prompt {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+// =============================================================================
+// Form field (email input in resend section)
+// =============================================================================
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.form-input {
+  display: block;
+  width: 100%;
+  padding: $spacing-2 $spacing-3;
+  font-size: 1rem;
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &::placeholder {
+    color: var(--color-text-secondary);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 20%, transparent);
+  }
+}
+
+// =============================================================================
+// Resend feedback messages
+// =============================================================================
+
+.resend-feedback {
+  min-height: 1.25rem; // reserve space to avoid layout shift
+
+  &__success {
+    font-size: 0.875rem;
+    color: var(--color-success);
+    margin: 0;
+    font-weight: 500;
+  }
+
+  &__error {
+    font-size: 0.875rem;
+    color: var(--color-danger);
+    margin: 0;
+  }
+}

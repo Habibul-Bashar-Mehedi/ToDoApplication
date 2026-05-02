@@ -1,0 +1,71 @@
+<section class="sharing-card" aria-labelledby="sharing-title">
+  <h3 id="sharing-title" class="sharing-card__title">Sharing &amp; Collaboration</h3>
+
+  <!-- Summary stats -->
+  <div class="sharing-stats" role="list" aria-label="Sharing summary">
+
+    <div class="stat-item" role="listitem" aria-label="Shared modules: {{ _metrics().sharedModuleCount }}">
+      <div class="stat-item__icon" aria-hidden="true">
+        <!-- Users icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round" width="20" height="20">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      </div>
+      <div class="stat-item__body">
+        <span class="stat-item__value">{{ _metrics().sharedModuleCount }}</span>
+        <span class="stat-item__label">Shared modules</span>
+      </div>
+    </div>
+
+    <div class="stat-item" role="listitem" aria-label="Collaboration activities: {{ _metrics().collaborationActivityCount }}">
+      <div class="stat-item__icon" aria-hidden="true">
+        <!-- Activity icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round" width="20" height="20">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+        </svg>
+      </div>
+      <div class="stat-item__body">
+        <span class="stat-item__value">{{ _metrics().collaborationActivityCount }}</span>
+        <span class="stat-item__label">Collaboration activities</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Top collaborators -->
+  @if (_metrics().topCollaborators.length > 0) {
+    <div class="collaborators">
+      <h4 class="collaborators__heading">Top collaborators</h4>
+      <ol class="collaborators__list" aria-label="Top collaborators by activity">
+        @for (collaborator of _metrics().topCollaborators; track collaborator.userId; let i = $index) {
+          <li class="collaborator-item">
+            <!-- Avatar placeholder with initials -->
+            <span
+              class="collaborator-item__avatar"
+              aria-hidden="true"
+            >
+              {{ collaborator.displayName.charAt(0).toUpperCase() }}
+            </span>
+            <span class="collaborator-item__name">{{ collaborator.displayName }}</span>
+            <span
+              class="collaborator-item__count"
+              aria-label="{{ collaborator.activityCount }} activities"
+            >
+              {{ collaborator.activityCount }}
+            </span>
+          </li>
+        }
+      </ol>
+    </div>
+  } @else {
+    <p class="sharing-card__empty">No collaboration activity in the selected range.</p>
+  }
+
+</section>

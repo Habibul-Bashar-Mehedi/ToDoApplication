@@ -1,0 +1,227 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+// =============================================================================
+// Quick Add Task — inline task creation form
+// =============================================================================
+
+.quick-add {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-lg;
+  overflow: hidden;
+}
+
+// =============================================================================
+// Collapsed trigger button
+// =============================================================================
+
+.quick-add-trigger {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  width: 100%;
+  padding: $spacing-4 $spacing-5;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-align: left;
+  transition: color 0.15s ease, background-color 0.15s ease;
+  min-height: 44px; // WCAG touch target
+
+  &:hover {
+    color: var(--color-primary);
+    background-color: color-mix(in srgb, var(--color-primary) 5%, transparent);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+    border-radius: $radius-md;
+  }
+
+  svg {
+    flex-shrink: 0;
+    color: var(--color-primary);
+  }
+}
+
+// =============================================================================
+// Expanded form wrapper
+// =============================================================================
+
+.quick-add-form-wrapper {
+  padding: $spacing-5 $spacing-6;
+}
+
+// =============================================================================
+// Error banner
+// =============================================================================
+
+.error-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-2;
+  background-color: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-danger) 30%, transparent);
+  border-radius: $radius-md;
+  color: var(--color-danger);
+  font-size: 0.875rem;
+  padding: $spacing-3 $spacing-4;
+  margin-bottom: $spacing-5;
+
+  svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+}
+
+// =============================================================================
+// Form fields
+// =============================================================================
+
+.form-field {
+  margin-bottom: $spacing-4;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin-bottom: $spacing-1;
+}
+
+.required-mark {
+  color: var(--color-danger);
+  margin-left: 2px;
+}
+
+.optional-hint {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  margin-left: $spacing-1;
+}
+
+.form-input,
+.form-select {
+  display: block;
+  width: 100%;
+  padding: $spacing-2 $spacing-3;
+  font-size: 0.9375rem;
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &::placeholder {
+    color: var(--color-text-secondary);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 20%, transparent);
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--color-danger);
+
+    &:focus {
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 20%, transparent);
+    }
+  }
+}
+
+// =============================================================================
+// Side-by-side row (module + priority)
+// =============================================================================
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+
+  @include tablet {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: $spacing-4;
+  }
+}
+
+.form-field--grow {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.form-field--shrink {
+  flex: 0 0 140px;
+}
+
+// =============================================================================
+// Form actions
+// =============================================================================
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: $spacing-3;
+  margin-top: $spacing-5;
+  padding-top: $spacing-4;
+  border-top: 1px solid var(--color-border);
+}
+
+// =============================================================================
+// Buttons
+// =============================================================================
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-2;
+  padding: $spacing-2 $spacing-5;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border-radius: $radius-md;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+  min-height: 44px; // WCAG touch target
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #ffffff;
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-primary-hover);
+  }
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+  }
+}

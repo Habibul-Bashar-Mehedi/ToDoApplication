@@ -1,0 +1,210 @@
+<div class="quick-add">
+  <!-- Collapsed trigger — click 1 of the primary workflow -->
+  @if (!isExpanded()) {
+    <button
+      type="button"
+      class="quick-add-trigger"
+      (click)="expand()"
+      aria-label="Add a new task"
+      aria-expanded="false"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        width="18"
+        height="18"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+      <span>Add a task</span>
+    </button>
+  }
+
+  <!-- Expanded inline form -->
+  @if (isExpanded()) {
+    <div
+      class="quick-add-form-wrapper"
+      role="region"
+      aria-label="Quick add task form"
+    >
+      <!-- Server error -->
+      @if (serverError()) {
+        <div
+          class="error-banner"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            width="16"
+            height="16"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          <span>{{ serverError() }}</span>
+        </div>
+      }
+
+      <form
+        [formGroup]="form"
+        (ngSubmit)="onSubmit()"
+        novalidate
+        aria-label="Quick add task"
+      >
+        <!-- Title -->
+        <div class="form-field">
+          <label class="form-label" for="quick-task-title">
+            Task title <span class="required-mark" aria-hidden="true">*</span>
+          </label>
+          <input
+            id="quick-task-title"
+            type="text"
+            class="form-input"
+            formControlName="title"
+            autocomplete="off"
+            aria-describedby="quick-task-title-error"
+            [attr.aria-invalid]="
+              form.get('title')!.invalid && form.get('title')!.touched
+            "
+            placeholder="What needs to be done?"
+            maxlength="200"
+          />
+          <app-field-error
+            id="quick-task-title-error"
+            [control]="form.get('title')"
+            [messages]="{
+              required: 'Task title is required',
+              maxlength: 'Title must be 200 characters or fewer'
+            }"
+          />
+        </div>
+
+        <!-- Module selector + Priority — side by side on wider screens -->
+        <div class="form-row">
+          <!-- Module -->
+          <div class="form-field form-field--grow">
+            <label class="form-label" for="quick-task-module">
+              Module <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <select
+              id="quick-task-module"
+              class="form-select"
+              formControlName="moduleId"
+              aria-describedby="quick-task-module-error"
+              [attr.aria-invalid]="
+                form.get('moduleId')!.invalid && form.get('moduleId')!.touched
+              "
+            >
+              <option [ngValue]="null" disabled>Select a module</option>
+              @for (module of modules; track module.id) {
+                <option [ngValue]="module.id">{{ module.name }}</option>
+              }
+            </select>
+            <app-field-error
+              id="quick-task-module-error"
+              [control]="form.get('moduleId')"
+              [messages]="{ required: 'Please select a module' }"
+            />
+          </div>
+
+          <!-- Priority -->
+          <div class="form-field form-field--shrink">
+            <label class="form-label" for="quick-task-priority">Priority</label>
+            <select
+              id="quick-task-priority"
+              class="form-select"
+              formControlName="priority"
+            >
+              @for (p of priorities; track p) {
+                <option [value]="p">{{ p | titlecase }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <!-- Due date (optional) -->
+        <div class="form-field">
+          <label class="form-label" for="quick-task-due-date">
+            Due date
+            <span class="optional-hint">(optional)</span>
+          </label>
+          <input
+            id="quick-task-due-date"
+            type="datetime-local"
+            class="form-input"
+            formControlName="dueDate"
+            aria-describedby="quick-task-due-date-error"
+            [attr.aria-invalid]="
+              form.get('dueDate')!.invalid && form.get('dueDate')!.touched
+            "
+          />
+          <app-field-error
+            id="quick-task-due-date-error"
+            [control]="form.get('dueDate')"
+            [messages]="{ pastDate: 'Due date must be in the future' }"
+          />
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn btn-ghost"
+            (click)="cancel()"
+            [disabled]="isLoading()"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="isLoading()"
+            [attr.aria-busy]="isLoading()"
+          >
+            @if (isLoading()) {
+              <app-loading-spinner size="sm" label="Creating task…" />
+              <span>Creating…</span>
+            } @else {
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                width="16"
+                height="16"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              <span>Create task</span>
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</div>

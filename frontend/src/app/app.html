@@ -1,0 +1,18 @@
+@if (authService.isAuthenticated()) {
+  <!-- Authenticated shell: header + sidebar + main content -->
+  <app-header />
+
+  <div class="app-layout">
+    <app-sidebar />
+
+    <main class="app-main" id="main-content" tabindex="-1">
+      <router-outlet />
+    </main>
+  </div>
+} @else {
+  <!-- Unauthenticated shell: full-page router outlet (login, register, etc.) -->
+  <router-outlet />
+}
+
+<!-- Global toast notifications — always rendered -->
+<app-toast />

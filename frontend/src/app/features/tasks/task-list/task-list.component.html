@@ -1,0 +1,141 @@
+<section class="task-list" aria-label="Task list">
+
+  <!-- Filter bar -->
+  <app-task-filter-bar
+    [modules]="modules()"
+    [filters]="filters()"
+    [showCancelled]="showCancelled()"
+    (filtersChanged)="onFiltersChanged($event)"
+    (showCancelledChanged)="onShowCancelledChanged($event)"
+  />
+
+  <!-- Loading state -->
+  @if (isLoading()) {
+    <div class="task-list__loading" aria-live="polite" aria-busy="true">
+      <app-loading-spinner label="Loading tasks…" />
+    </div>
+  }
+
+  <!-- Task grid -->
+  @if (!isLoading()) {
+    @if (filteredTasks().length > 0) {
+      <ul class="task-list__grid" aria-label="Tasks">
+        @for (task of filteredTasks(); track task.id) {
+          <li class="task-list__item">
+            <app-task-card
+              [task]="task"
+              (complete)="onComplete($event)"
+              (cancel)="onCancel($event)"
+              (delete)="onDelete($event)"
+            />
+          </li>
+        }
+      </ul>
+    } @else {
+      <!-- Empty state -->
+      <div class="task-list__empty" role="status" aria-live="polite">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          width="48"
+          height="48"
+          aria-hidden="true"
+          focusable="false"
+          class="task-list__empty-icon"
+        >
+          <path d="M9 11l3 3L22 4" />
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+        </svg>
+        <p class="task-list__empty-title">No tasks found</p>
+        <p class="task-list__empty-subtitle">
+          Try adjusting your filters or create a new task.
+        </p>
+        <a
+          routerLink="/tasks/new"
+          class="btn btn-primary"
+          aria-label="Create a new task"
+        >
+          Create task
+        </a>
+      </div>
+    }
+  }
+
+</section>
+
+<!-- Cancel modal -->
+<app-modal
+  [isOpen]="showCancelModal()"
+  title="Cancel task"
+  (closed)="closeCancelModal()"
+>
+  <p class="modal-text">Are you sure you want to cancel this task?</p>
+  <div class="modal-field">
+    <label class="modal-label" for="cancel-reason">
+      Reason <span class="modal-label--optional">(optional)</span>
+    </label>
+    <textarea
+      id="cancel-reason"
+      class="modal-textarea"
+      rows="3"
+      placeholder="Enter a reason for cancellation…"
+      [value]="cancelReason()"
+      (input)="cancelReason.set($any($event.target).value)"
+      aria-label="Cancellation reason (optional)"
+    ></textarea>
+  </div>
+
+  <div modal-footer class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="closeCancelModal()"
+      aria-label="Keep task, do not cancel"
+    >
+      Keep task
+    </button>
+    <button
+      type="button"
+      class="btn btn-warning"
+      (click)="confirmCancel()"
+      aria-label="Confirm task cancellation"
+    >
+      Cancel task
+    </button>
+  </div>
+</app-modal>
+
+<!-- Delete modal -->
+<app-modal
+  [isOpen]="showDeleteModal()"
+  title="Delete task"
+  (closed)="closeDeleteModal()"
+>
+  <p class="modal-text">
+    Are you sure you want to delete this task? This action cannot be undone.
+  </p>
+
+  <div modal-footer class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="closeDeleteModal()"
+      aria-label="Keep task, do not delete"
+    >
+      Keep task
+    </button>
+    <button
+      type="button"
+      class="btn btn-danger"
+      (click)="confirmDelete()"
+      aria-label="Confirm task deletion"
+    >
+      Delete task
+    </button>
+  </div>
+</app-modal>

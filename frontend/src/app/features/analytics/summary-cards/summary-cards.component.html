@@ -1,0 +1,93 @@
+<div class="summary-cards" role="list" aria-label="Analytics summary">
+
+  <!-- Total tasks -->
+  <article
+    class="card card--neutral"
+    role="listitem"
+    aria-label="Total tasks: {{ _summary().totalTasks }}"
+  >
+    <div class="card__icon" aria-hidden="true">
+      <!-- List icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round"
+           stroke-linejoin="round" width="22" height="22">
+        <line x1="8" y1="6" x2="21" y2="6" />
+        <line x1="8" y1="12" x2="21" y2="12" />
+        <line x1="8" y1="18" x2="21" y2="18" />
+        <line x1="3" y1="6" x2="3.01" y2="6" />
+        <line x1="3" y1="12" x2="3.01" y2="12" />
+        <line x1="3" y1="18" x2="3.01" y2="18" />
+      </svg>
+    </div>
+    <div class="card__body">
+      <span class="card__value">{{ _summary().totalTasks }}</span>
+      <span class="card__label">Total tasks</span>
+    </div>
+  </article>
+
+  <!-- Completion rate -->
+  <article
+    class="card"
+    [ngClass]="completionRateClass()"
+    role="listitem"
+    aria-label="Completion rate: {{ completionRateDisplay() }}"
+  >
+    <div class="card__icon" aria-hidden="true">
+      <!-- Check-circle icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round"
+           stroke-linejoin="round" width="22" height="22">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+        <polyline points="22 4 12 14.01 9 11.01" />
+      </svg>
+    </div>
+    <div class="card__body">
+      <span class="card__value">{{ completionRateDisplay() }}</span>
+      <span class="card__label">Completion rate</span>
+    </div>
+  </article>
+
+  <!-- Overdue count -->
+  <article
+    class="card"
+    [ngClass]="overdueClass()"
+    role="listitem"
+    aria-label="Overdue tasks: {{ _summary().overdueCount }}"
+  >
+    <div class="card__icon" aria-hidden="true">
+      <!-- Alert-circle icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round"
+           stroke-linejoin="round" width="22" height="22">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+      </svg>
+    </div>
+    <div class="card__body">
+      <span class="card__value">{{ _summary().overdueCount }}</span>
+      <span class="card__label">Overdue tasks</span>
+    </div>
+  </article>
+
+  <!-- Active modules -->
+  <article
+    class="card card--neutral"
+    role="listitem"
+    aria-label="Active modules: {{ _summary().activeModuleCount }}"
+  >
+    <div class="card__icon" aria-hidden="true">
+      <!-- Folder icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round"
+           stroke-linejoin="round" width="22" height="22">
+        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+      </svg>
+    </div>
+    <div class="card__body">
+      <span class="card__value">{{ _summary().activeModuleCount }}</span>
+      <span class="card__label">Active modules</span>
+    </div>
+  </article>
+
+</div>

@@ -1,0 +1,147 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.notification-item {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-3;
+  padding: $spacing-4;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  transition: background 0.15s ease;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: var(--color-background);
+  }
+
+  // Unread items get a subtle left accent + slightly stronger background
+  &--unread {
+    background: #eef2ff; // Indigo 50
+    border-left: 3px solid var(--color-primary);
+
+    .notification-item__type {
+      font-weight: 600;
+    }
+
+    .notification-item__message {
+      font-weight: 500;
+      color: var(--color-text-primary);
+    }
+  }
+
+  &--overdue {
+    .notification-item__icon {
+      color: var(--color-danger);
+    }
+  }
+}
+
+// ── Unread dot ──────────────────────────────────────────────────────────────
+
+.notification-item__dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: $radius-full;
+  background: var(--color-primary);
+  margin-top: 6px; // align with first line of text
+
+  &--read {
+    background: transparent;
+  }
+}
+
+// ── Icon ────────────────────────────────────────────────────────────────────
+
+.notification-item__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-full;
+  background: var(--color-background);
+  color: var(--color-primary);
+  border: 1px solid var(--color-border);
+}
+
+// ── Content ─────────────────────────────────────────────────────────────────
+
+.notification-item__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-item__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-2;
+  margin-bottom: $spacing-1;
+}
+
+.notification-item__type {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.notification-item__time {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+// ── Message ─────────────────────────────────────────────────────────────────
+
+.notification-item__message {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: default;
+  width: 100%;
+
+  &--link {
+    color: var(--color-primary);
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      @include focus-ring;
+      border-radius: $radius-sm;
+    }
+  }
+
+  &--button {
+    cursor: pointer;
+
+    &:focus-visible {
+      @include focus-ring;
+      border-radius: $radius-sm;
+    }
+  }
+}
+
+.notification-item__link-icon {
+  flex-shrink: 0;
+  opacity: 0.7;
+}

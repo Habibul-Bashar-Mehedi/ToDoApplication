@@ -1,0 +1,108 @@
+<div class="date-range-selector" role="group" aria-label="Date range selection">
+
+  <!-- Preset buttons -->
+  <div class="date-range-selector__presets" role="group" aria-label="Preset date ranges">
+    <button
+      type="button"
+      class="preset-btn"
+      [class.preset-btn--active]="activePreset() === '7d'"
+      [attr.aria-pressed]="activePreset() === '7d'"
+      (click)="selectPreset('7d')"
+    >
+      Last 7 days
+    </button>
+
+    <button
+      type="button"
+      class="preset-btn"
+      [class.preset-btn--active]="activePreset() === '30d'"
+      [attr.aria-pressed]="activePreset() === '30d'"
+      (click)="selectPreset('30d')"
+    >
+      Last 30 days
+    </button>
+
+    <button
+      type="button"
+      class="preset-btn"
+      [class.preset-btn--active]="activePreset() === '90d'"
+      [attr.aria-pressed]="activePreset() === '90d'"
+      (click)="selectPreset('90d')"
+    >
+      Last 90 days
+    </button>
+
+    <button
+      type="button"
+      class="preset-btn"
+      [class.preset-btn--active]="activePreset() === 'custom'"
+      [attr.aria-pressed]="activePreset() === 'custom'"
+      (click)="selectCustom()"
+    >
+      Custom range
+    </button>
+  </div>
+
+  <!-- Custom date range picker (shown only when "Custom range" is active) -->
+  @if (showCustomPicker()) {
+    <form
+      [formGroup]="customForm"
+      (ngSubmit)="applyCustomRange()"
+      class="date-range-selector__custom"
+      aria-label="Custom date range"
+      novalidate
+    >
+      <div class="date-range-selector__fields">
+        <div class="date-field">
+          <label for="custom-from" class="date-field__label">From</label>
+          <input
+            type="date"
+            id="custom-from"
+            class="date-field__input"
+            formControlName="from"
+            [max]="today"
+            aria-describedby="custom-from-error"
+          />
+          @if (customForm.get('from')?.invalid && customForm.get('from')?.touched) {
+            <span id="custom-from-error" class="date-field__error" role="alert">
+              Start date is required.
+            </span>
+          }
+        </div>
+
+        <span class="date-range-selector__separator" aria-hidden="true">—</span>
+
+        <div class="date-field">
+          <label for="custom-to" class="date-field__label">To</label>
+          <input
+            type="date"
+            id="custom-to"
+            class="date-field__input"
+            formControlName="to"
+            [max]="today"
+            aria-describedby="custom-to-error"
+          />
+          @if (customForm.get('to')?.errors?.['beforeFrom']) {
+            <span id="custom-to-error" class="date-field__error" role="alert">
+              End date must be on or after the start date.
+            </span>
+          } @else if (customForm.get('to')?.invalid && customForm.get('to')?.touched) {
+            <span id="custom-to-error" class="date-field__error" role="alert">
+              End date is required.
+            </span>
+          }
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary btn-sm"
+        [disabled]="customForm.invalid"
+        aria-label="Apply custom date range"
+      >
+        Apply
+      </button>
+    </form>
+  }
+
+</div>
